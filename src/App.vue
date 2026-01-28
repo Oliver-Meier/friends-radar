@@ -9,16 +9,52 @@ const { friends, addFriend, updateLastContact } = useFriends()
 onMounted(() => {
   if (friends.value.length === 0) {
     const now = Date.now()
-    addFriend('Alice')
-    addFriend('Bob')
-    addFriend('Charlie')
-    addFriend('Diana')
     
-    // Manually set their lastContact times for demo
-    if (friends.value[0]) friends.value[0].lastContact = now // Green (today)
-    if (friends.value[1]) friends.value[1].lastContact = now - (3 * 24 * 60 * 60 * 1000) // Green (3 days)
-    if (friends.value[2]) friends.value[2].lastContact = now - (10 * 24 * 60 * 60 * 1000) // Yellow (10 days)
-    if (friends.value[3]) friends.value[3].lastContact = now - (30 * 24 * 60 * 60 * 1000) // Red (30 days)
+    // 25 friends with various names
+    const friendNames = [
+      'Alice', 'Bob', 'Charlie', 'Diana', 'Eve',
+      'Frank', 'Grace', 'Henry', 'Ivy', 'Jack',
+      'Kate', 'Liam', 'Mia', 'Noah', 'Olivia',
+      'Peter', 'Quinn', 'Rachel', 'Sam', 'Tina',
+      'Uma', 'Victor', 'Wendy', 'Xavier', 'Yara'
+    ]
+    
+    // Add all friends
+    friendNames.forEach(name => addFriend(name))
+    
+    // Set different lastContact times (using seconds for testing)
+    // Mix of green (0-7s), yellow (7-21s), and red (21+s)
+    const timings = [
+      0,    // Green - just now
+      2,    // Green - 2 seconds ago
+      5,    // Green - 5 seconds ago
+      7,    // Green/Yellow boundary
+      8,    // Yellow - 8 seconds ago
+      10,   // Yellow - 10 seconds ago
+      12,   // Yellow - 12 seconds ago
+      15,   // Yellow - 15 seconds ago
+      18,   // Yellow - 18 seconds ago
+      20,   // Yellow - 20 seconds ago
+      21,   // Yellow/Red boundary
+      25,   // Red - 25 seconds ago
+      30,   // Red - 30 seconds ago
+      40,   // Red - 40 seconds ago
+      50,   // Red - 50 seconds ago
+      60,   // Red - 1 minute ago
+      90,   // Red - 1.5 minutes ago
+      120,  // Red - 2 minutes ago
+      180,  // Red - 3 minutes ago
+      300,  // Red - 5 minutes ago
+      600,  // Red - 10 minutes ago
+      1,    // Green - 1 second ago
+      4,    // Green - 4 seconds ago
+      9,    // Yellow - 9 seconds ago
+      35    // Red - 35 seconds ago
+    ]
+    
+    friends.value.forEach((friend, index) => {
+      friend.lastContact = now - (timings[index] * 1000)
+    })
   }
 })
 
