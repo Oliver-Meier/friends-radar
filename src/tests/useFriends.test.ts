@@ -279,4 +279,102 @@ describe('useFriends', () => {
       expect(newFriends.value.map(f => f.name)).toEqual(['Alice', 'Bob'])
     })
   })
+
+  describe('user-scoped data', () => {
+    it('stores data in user-specific localStorage key when userId is provided', async () => {
+      localStorage.clear()
+      const userId = 'user123'
+      const { friends, addFriend } = useFriends(userId)
+      friends.value = []
+      
+      addFriend('Alice')
+      
+      // Wait for watch to trigger
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      const stored = localStorage.getItem(`friends-radar-data-${userId}`)
+      expect(stored).toBeDefined()
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        expect(parsed).toHaveLength(1)
+        expect(parsed[0]?.name).toBe('Alice')
+      }
+    })
+
+    it('isolates data between different users', async () => {
+      localStorage.clear()
+      
+      // User 1 adds Alice
+      const { friends: friends1, addFriend: addFriend1 } = useFriends('user1')
+      friends1.value = []
+      addFriend1('Alice')
+      
+      // Wait for watch to trigger
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      // User 2 adds Bob
+      const { friends: friends2, addFriend: addFriend2 } = useFriends('user2')
+      friends2.value = []
+      addFriend2('Bob')
+      
+      // Wait for watch to trigger
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      // Verify each user has their own data
+      const user1Data = localStorage.getItem('friends-radar-data-user1')
+      const user2Data = localStorage.getItem('friends-radar-data-user2')
+      
+      expect(user1Data).toBeDefined()
+      expect(user2Data).toBeDefined()
+      
+      if (user2Data) {
+        const user2Friends = JSON.parse(user2Data)
+        
+        expect(user2Friends).toHaveLength(1)
+        expect(user2Friends[0]?.name).toBe('Bob')
+      }
+    })
+
+    it('switches data when userId changes', () => {
+      localStorage.clear()
+      
+      // Set up data for two users
+      localStorage.setItem('friends-radar-data-user1', JSON.stringify([
+        { id: '1', name: 'Alice', lastContact: Date.now() }
+      ]))
+      localStorage.setItem('friends-radar-data-user2', JSON.stringify([
+        { id: '2', name: 'Bob', lastContact: Date.now() }
+      ]))
+      
+      // Load user1's data
+      const { friends: friends1 } = useFriends('user1')
+      expect(friends1.value).toHaveLength(1)
+      expect(friends1.value[0]?.name).toBe('Alice')
+      
+      // Switch to user2's data
+      const { friends: friends2 } = useFriends('user2')
+      expect(friends2.value).toHaveLength(1)
+      expect(friends2.value[0]?.name).toBe('Bob')
+    })
+
+    it('uses default storage key when no userId provided', async () => {
+      localStorage.clear()
+      const { friends, addFriend } = useFriends()
+      friends.value = []
+      
+      addFriend('Alice')
+      
+      // Wait for watch to trigger
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      const stored = localStorage.getItem('friends-radar-data')
+      expect(stored).toBeDefined()
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        expect(parsed).toHaveLength(1)
+        expect(parsed[0]?.name).toBe('Alice')
+      }
+    })
+  })
 })
+

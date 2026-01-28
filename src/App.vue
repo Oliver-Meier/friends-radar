@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import FriendsGrid from './components/FriendsGrid.vue'
 import AddFriendForm from './components/AddFriendForm.vue'
+import LoginScreen from './components/LoginScreen.vue'
+import UserProfile from './components/UserProfile.vue'
 import { useFriends } from './composables/useFriends'
 import { useNotifications } from './composables/useNotifications'
+import { useAuth } from './composables/useAuth'
 
-const { friends, addFriend, updateLastContact, removeFriend } = useFriends()
+const { currentUser } = useAuth()
+
+// Pass userId to useFriends to scope data per user
+const userId = computed(() => currentUser.value?.id)
+const { friends, addFriend, updateLastContact, removeFriend } = useFriends(userId.value)
 const { notificationsEnabled, requestPermission, isNotificationSupported, overdueFriends, isSafari, isIOS } = useNotifications(friends)
 
 const handleContact = (id: string) => {
@@ -25,9 +33,16 @@ const handleEnableNotifications = () => {
 </script>
 
 <template>
-  <div class="app">
+  <!-- Show login screen if not authenticated -->
+  <LoginScreen v-if="!currentUser" />
+  
+  <!-- Show main app if authenticated -->
+  <div v-else class="app">
     <h1>Friends Radar</h1>
     <p class="subtitle">Never lose touch with the people who matter</p>
+    
+    <!-- User profile with logout -->
+    <UserProfile />
     
     <!-- Notification banner for supported browsers -->
     <div v-if="isNotificationSupported && !notificationsEnabled" class="notification-banner">
