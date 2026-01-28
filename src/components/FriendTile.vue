@@ -50,6 +50,7 @@ const handleClick = () => {
   border-radius: 50%;
   border: 4px solid #e0e0e0;
   transition: all 0.3s ease;
+  pointer-events: none;
 }
 
 .indicator.green {
@@ -72,5 +73,6 @@ const handleClick = () => {
   font-weight: 500;
   color: #333;
   text-align: center;
+  pointer-events: none;
 }
 </style>
