@@ -2,7 +2,11 @@ import { ref, onMounted, watch, computed } from 'vue'
 import type { Friend } from '../types/Friend'
 
 const NOTIFICATION_CHECK_INTERVAL = 60000 // Check every minute
-const OVERDUE_THRESHOLD = 21 * 1000 // 21 seconds for testing (will be 21 days in production)
+
+// Use seconds for tests, days for production (same as colorUtils)
+const IS_TEST = import.meta.env.MODE === 'test'
+const MILLISECONDS_PER_UNIT = IS_TEST ? 1000 : 1000 * 60 * 60 * 24 // seconds in test, days in prod
+const OVERDUE_THRESHOLD = 21 * MILLISECONDS_PER_UNIT // 21 seconds (test) or 21 days (prod)
 
 const notificationPermission = ref<NotificationPermission>('default')
 const notificationsEnabled = ref(false)
@@ -10,27 +14,35 @@ const notificationsEnabled = ref(false)
 // Detect Safari/iOS
 const isSafari = () => {
   const ua = navigator.userAgent.toLowerCase()
-  return ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1
+  const isSafariBrowser = ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1
+  console.log('[useNotifications] Safari detection:', isSafariBrowser, 'UA:', ua)
+  return isSafariBrowser
 }
 
 const isIOS = () => {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+  const isiOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  console.log('[useNotifications] iOS detection:', isiOSDevice, 'UA:', navigator.userAgent, 'Platform:', navigator.platform)
+  return isiOSDevice
 }
 
 const isNotificationSupported = computed(() => {
   // Safari on iOS doesn't support Web Notifications API at all
   if (isIOS()) {
+    console.log('[useNotifications] iOS detected - notifications NOT supported')
     return false
   }
   
   // Safari on macOS has limited support
   // Web Push API is not available in PWA mode
   if (isSafari() && !window.Notification) {
+    console.log('[useNotifications] Safari without Notification API - NOT supported')
     return false
   }
   
-  return 'Notification' in window
+  const supported = 'Notification' in window
+  console.log('[useNotifications] Notification support:', supported)
+  return supported
 })
 
 export function useNotifications(friends: any) {
