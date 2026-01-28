@@ -34,6 +34,10 @@ const handleClick = () => {
   padding: 16px;
   cursor: pointer;
   transition: transform 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .friend-tile:hover {
