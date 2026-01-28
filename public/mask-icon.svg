@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Radar circles -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="currentColor" stroke-width="3" opacity="0.3"/>
+  <circle cx="256" cy="256" r="130" fill="none" stroke="currentColor" stroke-width="3" opacity="0.4"/>
+  <circle cx="256" cy="256" r="80" fill="none" stroke="currentColor" stroke-width="3" opacity="0.5"/>
+  
+  <!-- Center dot -->
+  <circle cx="256" cy="256" r="15" fill="currentColor"/>
+  
+  <!-- Radar sweep line -->
+  <line x1="256" y1="256" x2="256" y2="76" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+  
+  <!-- Friend dots -->
+  <circle cx="320" cy="200" r="12" fill="currentColor"/>
+  <circle cx="180" cy="220" r="12" fill="currentColor"/>
+  <circle cx="300" cy="320" r="12" fill="currentColor"/>
+  <circle cx="200" cy="350" r="12" fill="currentColor"/>
+</svg>

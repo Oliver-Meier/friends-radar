@@ -26,6 +26,9 @@ Click on a friend's tile to record a new contact, and watch their indicator turn
 - **Real-Time Updates**: Watch colors change as time passes
 - **Zero Configuration**: No accounts, no servers, just open and use
 - **Privacy First**: All data stays on your device
+- **📱 PWA Support**: Install as a native app on your phone or desktop
+- **🔔 Smart Notifications**: Get notified when friends are due for contact
+- **🎨 Custom Icon**: Beautiful radar-themed icon with traffic light indicators
 
 ## 🚀 Tech Stack
 
@@ -33,8 +36,11 @@ Click on a friend's tile to record a new contact, and watch their indicator turn
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
 - **[Vite](https://vitejs.dev/)** - Lightning-fast build tool
 - **[Composition API](https://vuejs.org/guide/extras/composition-api-faq.html)** - Modern Vue development pattern
+- **[vite-plugin-pwa](https://vite-pwa-org.netlify.app/)** - Progressive Web App support
+- **[Workbox](https://developers.google.com/web/tools/workbox)** - Service worker generation
 - **CSS Grid** - Responsive layout
 - **localStorage** - Client-side persistence
+- **Web Notifications API** - Push notifications for overdue contacts
 
 ## 📦 Installation
 
@@ -67,6 +73,36 @@ Click on a friend's tile to record a new contact, and watch their indicator turn
    ```
 
 ## 🎮 Usage
+
+### Installing as PWA
+
+Friends Radar can be installed as a Progressive Web App on your device:
+
+**On Desktop (Chrome/Edge/Brave):**
+1. Open the app in your browser
+2. Look for the install icon in the address bar (⊕ or install button)
+3. Click "Install" to add it to your desktop
+
+**On iOS (Safari):**
+1. Open the app in Safari
+2. Tap the Share button
+3. Scroll down and tap "Add to Home Screen"
+4. Name it and tap "Add"
+
+**On Android (Chrome):**
+1. Open the app in Chrome
+2. Tap the three-dot menu
+3. Select "Install app" or "Add to Home Screen"
+
+### Enabling Notifications
+
+When you first open the app, you'll see a banner to enable notifications:
+
+1. Click the "Enable Notifications" button
+2. Allow notifications in your browser prompt
+3. You'll get notified when friends haven't been contacted for 21+ seconds (or days in production)
+
+**Note**: Notifications work best when the app is installed as a PWA.
 
 ### Adding Friends
 

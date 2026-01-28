@@ -2,8 +2,10 @@
 import FriendsGrid from './components/FriendsGrid.vue'
 import AddFriendForm from './components/AddFriendForm.vue'
 import { useFriends } from './composables/useFriends'
+import { useNotifications } from './composables/useNotifications'
 
 const { friends, addFriend, updateLastContact, removeFriend } = useFriends()
+const { notificationsEnabled, requestPermission } = useNotifications(friends)
 
 const handleContact = (id: string) => {
   updateLastContact(id)
@@ -16,12 +18,21 @@ const handleAddFriend = (name: string) => {
 const handleDeleteFriend = (id: string) => {
   removeFriend(id)
 }
+
+const handleEnableNotifications = () => {
+  requestPermission()
+}
 </script>
 
 <template>
   <div class="app">
     <h1>Friends Radar</h1>
     <p class="subtitle">Never lose touch with the people who matter</p>
+    
+    <div v-if="!notificationsEnabled" class="notification-banner">
+      <p>Enable notifications to get reminded when friends are due for contact</p>
+      <button @click="handleEnableNotifications" class="enable-btn">Enable Notifications</button>
+    </div>
     
     <AddFriendForm @add="handleAddFriend" />
     
@@ -65,12 +76,55 @@ h1 {
 
 .subtitle {
   color: #4a4a4a;
-  margin-bottom: 56px;
+  margin-bottom: 32px;
   user-select: none;
   -webkit-user-select: none;
   font-size: 1.15rem;
   font-weight: 400;
   letter-spacing: -0.01em;
+}
+
+.notification-banner {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  padding: 20px 24px;
+  border-radius: 12px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.notification-banner p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.enable-btn {
+  background: white;
+  color: #4caf50;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.enable-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.enable-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 :deep(.friends-grid-container) {
