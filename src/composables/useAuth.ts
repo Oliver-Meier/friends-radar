@@ -2,6 +2,7 @@ import { ref, onMounted } from 'vue'
 import type { GoogleUser, GoogleCredentialResponse, GooglePayload } from '../types/GoogleAuth'
 
 const STORAGE_KEY = 'friends-radar-user'
+const GUEST_MODE_KEY = 'friends-radar-guest-mode'
 
 // IMPORTANT: You'll need to replace this with your actual Google OAuth Client ID
 // Get it from: https://console.cloud.google.com/apis/credentials
@@ -46,6 +47,7 @@ const saveUser = (user: GoogleUser | null): void => {
   try {
     if (user) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
+      localStorage.removeItem(GUEST_MODE_KEY) // Not in guest mode if logged in
     } else {
       localStorage.removeItem(STORAGE_KEY)
     }
@@ -54,7 +56,23 @@ const saveUser = (user: GoogleUser | null): void => {
   }
 }
 
+// Check if in guest mode
+const isInGuestMode = (): boolean => {
+  return localStorage.getItem(GUEST_MODE_KEY) === 'true'
+}
+
+// Set guest mode
+const setGuestMode = (isGuest: boolean): void => {
+  if (isGuest) {
+    localStorage.setItem(GUEST_MODE_KEY, 'true')
+    localStorage.removeItem(STORAGE_KEY) // Remove any user data
+  } else {
+    localStorage.removeItem(GUEST_MODE_KEY)
+  }
+}
+
 const currentUser = ref<GoogleUser | null>(loadUser())
+const isGuest = ref<boolean>(isInGuestMode())
 const isInitialized = ref(false)
 
 export function useAuth() {
@@ -70,6 +88,7 @@ export function useAuth() {
       }
       
       currentUser.value = user
+      isGuest.value = false
       saveUser(user)
     }
   }
@@ -120,8 +139,17 @@ export function useAuth() {
 
   const logout = () => {
     currentUser.value = null
+    // When logging out, switch to guest mode instead of showing login screen
+    isGuest.value = true
+    setGuestMode(true)
     saveUser(null)
     window.google?.accounts.id.disableAutoSelect()
+  }
+
+  const continueAsGuest = () => {
+    currentUser.value = null
+    isGuest.value = true
+    setGuestMode(true)
   }
 
   onMounted(() => {
@@ -130,9 +158,11 @@ export function useAuth() {
 
   return {
     currentUser,
+    isGuest,
     isInitialized,
     login,
     logout,
+    continueAsGuest,
     initializeGoogleAuth
   }
 }

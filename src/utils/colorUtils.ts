@@ -1,23 +1,25 @@
 export type ContactColor = 'green' | 'yellow' | 'red'
 
-// TEMP: Using seconds instead of days for testing
-const MILLISECONDS_PER_SECOND = 1000
-const GREEN_THRESHOLD_SECONDS = 7
-const YELLOW_THRESHOLD_SECONDS = 21
+// Use seconds for tests, days for production
+const IS_TEST = import.meta.env.MODE === 'test'
+const MILLISECONDS_PER_UNIT = IS_TEST ? 1000 : 1000 * 60 * 60 * 24 // seconds in test, days in prod
+const GREEN_THRESHOLD = 7  // 7 seconds (test) or 7 days (prod)
+const YELLOW_THRESHOLD = 21 // 21 seconds (test) or 21 days (prod)
 
 /**
  * Determines the traffic light color based on how long ago a friend was last contacted
- * TEMP: Using seconds for testing (will be days in production)
+ * Production: Uses days (7 days green, 21 days yellow, 21+ days red)
+ * Tests: Uses seconds for fast testing
  * @param lastContact - Unix timestamp (milliseconds) of last contact
- * @returns 'green' if within 7 seconds, 'yellow' if 7-21 seconds, 'red' if 21+ seconds
+ * @returns 'green' if within threshold, 'yellow' if between thresholds, 'red' if beyond
  */
 export function getContactColor(lastContact: number): ContactColor {
   const now = Date.now()
-  const secondsSinceContact = (now - lastContact) / MILLISECONDS_PER_SECOND
+  const unitsSinceContact = (now - lastContact) / MILLISECONDS_PER_UNIT
 
-  if (secondsSinceContact <= GREEN_THRESHOLD_SECONDS) {
+  if (unitsSinceContact <= GREEN_THRESHOLD) {
     return 'green'
-  } else if (secondsSinceContact <= YELLOW_THRESHOLD_SECONDS) {
+  } else if (unitsSinceContact <= YELLOW_THRESHOLD) {
     return 'yellow'
   } else {
     return 'red'

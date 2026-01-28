@@ -8,9 +8,13 @@ import { useFriends } from './composables/useFriends'
 import { useNotifications } from './composables/useNotifications'
 import { useAuth } from './composables/useAuth'
 
-const { currentUser } = useAuth()
+const { currentUser, isGuest, continueAsGuest } = useAuth()
 
-// Pass userId to useFriends to scope data per user (as reactive ref)
+// Show app if user is logged in OR in guest mode
+const showApp = computed(() => currentUser.value !== null || isGuest.value)
+
+// Pass userId to useFriends to scope data per user
+// null = guest mode (local storage only)
 const userId = computed(() => currentUser.value?.id)
 const { friends, addFriend, updateLastContact, removeFriend, isSyncing, syncError, isOnline } = useFriends(userId)
 const { notificationsEnabled, requestPermission, isNotificationSupported, overdueFriends, isSafari, isIOS } = useNotifications(friends)
@@ -30,20 +34,30 @@ const handleDeleteFriend = (id: string) => {
 const handleEnableNotifications = () => {
   requestPermission()
 }
+
+const handleContinueAsGuest = () => {
+  continueAsGuest()
+}
 </script>
 
 <template>
-  <!-- Show login screen if not authenticated -->
-  <LoginScreen v-if="!currentUser" />
+  <!-- Show login screen if not authenticated and not in guest mode -->
+  <LoginScreen v-if="!showApp" @continue-as-guest="handleContinueAsGuest" />
   
-  <!-- Show main app if authenticated -->
+  <!-- Show main app if authenticated or in guest mode -->
   <div v-else class="app">
-    <!-- User profile fixed in top-right corner -->
+    <!-- User profile fixed in top-right corner (only if logged in) -->
     <UserProfile 
+      v-if="currentUser"
       :isSyncing="isSyncing" 
       :isOnline="isOnline" 
       :syncError="syncError" 
     />
+    
+    <!-- Guest mode indicator -->
+    <div v-else class="guest-banner">
+      📱 Guest Mode - Data stored locally on this device only
+    </div>
     
     <h1>Friends Radar</h1>
     <p class="subtitle">Never lose touch with the people who matter</p>
@@ -85,15 +99,15 @@ const handleEnableNotifications = () => {
     <div class="legend">
       <div class="legend-item">
         <span class="legend-color green"></span>
-        <span>Green: 0-7 seconds (TESTING)</span>
+        <span>Green: 0-7 days</span>
       </div>
       <div class="legend-item">
         <span class="legend-color yellow"></span>
-        <span>Yellow: 7-21 seconds (TESTING)</span>
+        <span>Yellow: 7-21 days</span>
       </div>
       <div class="legend-item">
         <span class="legend-color red"></span>
-        <span>Red: 21+ seconds (TESTING)</span>
+        <span>Red: 21+ days</span>
       </div>
     </div>
   </div>
@@ -106,6 +120,20 @@ const handleEnableNotifications = () => {
   padding: 48px 24px;
   text-align: center;
   min-height: 100vh;
+}
+
+.guest-banner {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+  z-index: 1000;
 }
 
 h1 {

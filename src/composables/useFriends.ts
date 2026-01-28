@@ -56,34 +56,50 @@ function createUserInstance(userIdRef: Ref<string | undefined>) {
 
   // Initialize or update sync functions
   const initializeSyncForUser = (userId: string | undefined) => {
+    console.log(`[useFriends] Initializing for user: ${userId || 'guest'}`)
+    
     // Stop any existing polling
     if (currentStopPolling) {
       currentStopPolling()
       currentStopPolling = null
     }
 
-    // Initialize Cloudflare sync for this user
-    currentSyncFns = useCloudflareSync(userId, idToken.value)
-
-    // Load from localStorage first (instant)
-    friends.value = loadFriends(userId)
+    // Load from localStorage for this user
+    const localFriends = loadFriends(userId)
     currentUserId = userId
 
-    // Then load from Cloudflare (for cross-device sync)
+    // If user is logged in (has userId), try to sync with Cloudflare
     if (userId) {
+      console.log(`[useFriends] User logged in, checking Cloudflare...`)
+      
+      // Start with local data (instant feedback)
+      friends.value = localFriends
+      
+      // Initialize Cloudflare sync
+      currentSyncFns = useCloudflareSync(userId, idToken.value)
+      
+      // Then check Cloudflare and potentially replace with server data
       currentSyncFns.loadFriendsFromCloudflare().then(cloudflareFriends => {
-        // Only merge if we're still on the same user
+        // Only update if we're still on the same user
         if (currentUserId === userId) {
           if (cloudflareFriends.length > 0) {
-            // Merge with local data, preferring newer timestamps
-            const mergedFriends = mergeFriends(friends.value, cloudflareFriends)
-            friends.value = mergedFriends
-            saveFriends(mergedFriends, userId)
-          } else if (friends.value.length > 0) {
-            // If Cloudflare is empty but we have local data, sync it up
-            currentSyncFns?.syncAllFriendsToCloudflare(friends.value).catch(console.error)
+            // Use Cloudflare data as source of truth (replaces local)
+            console.log(`[useFriends] Loaded ${cloudflareFriends.length} friends from Cloudflare`)
+            friends.value = cloudflareFriends
+            saveFriends(cloudflareFriends, userId)
+          } else if (localFriends.length > 0) {
+            // If Cloudflare is empty but we have local data, upload it
+            console.log(`[useFriends] Cloudflare empty, uploading ${localFriends.length} local friends`)
+            currentSyncFns?.syncAllFriendsToCloudflare(localFriends).catch(console.error)
+          } else {
+            // Both empty - clear to start fresh
+            console.log(`[useFriends] Starting fresh (no data)`)
+            friends.value = []
           }
         }
+      }).catch(error => {
+        console.error('[useFriends] Failed to load from Cloudflare, using local data:', error)
+        // Keep local data if Cloudflare fails
       })
 
       // Start polling for updates every 5 seconds
@@ -97,6 +113,13 @@ function createUserInstance(userIdRef: Ref<string | undefined>) {
       }, 5000)
       
       currentStopPolling = currentSyncFns.stopPolling
+    } else {
+      // Guest mode - use local data only (no sync)
+      console.log(`[useFriends] Guest mode, using local data only`)
+      friends.value = localFriends
+      
+      // Initialize sync functions even in guest mode (but don't use them)
+      currentSyncFns = useCloudflareSync(userId, idToken.value)
     }
   }
 
