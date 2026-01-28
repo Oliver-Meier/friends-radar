@@ -1,5 +1,14 @@
 {
   "branchName": "feature/core-friends-radar",
+  "testingRequirements": {
+    "mandatory": true,
+    "description": "All user stories must pass tests before being marked as complete",
+    "commands": {
+      "test": "npm run test",
+      "build": "npm run build (runs tests automatically)"
+    },
+    "documentation": "See TESTING.md for full testing requirements"
+  },
   "userStories": [
     {
       "id": "US-001",
@@ -9,10 +18,12 @@
         "Friend interface with id (string), name (string), lastContact (number/timestamp)",
         "useFriends composable created in src/composables/",
         "Composable provides: friends ref, addFriend, removeFriend, updateLastContact functions",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 1,
-      "passes": true
+      "passes": true,
+      "tested": true
     },
     {
       "id": "US-002",
@@ -23,10 +34,12 @@
         "Friends loaded from localStorage on app init",
         "Uses key 'friends-radar-data'",
         "Handles empty/invalid localStorage gracefully",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 2,
-      "passes": true
+      "passes": true,
+      "tested": true
     },
     {
       "id": "US-003",
@@ -38,10 +51,12 @@
         "Yellow: contacted 7-21 days ago",
         "Red: not contacted for 21+ days",
         "Located in src/utils/colorUtils.ts",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 3,
-      "passes": true
+      "passes": true,
+      "tested": true
     },
     {
       "id": "US-004",
@@ -52,12 +67,15 @@
         "Displays circular color indicator (traffic light style)",
         "Shows friend name below indicator",
         "Indicator color determined by getContactColor utility",
+        "Colors update reactively over time (green → yellow → red)",
         "Emits 'contact' event when clicked",
         "Styled with CSS (no external UI library needed)",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 4,
-      "passes": true
+      "passes": true,
+      "tested": true
     },
     {
       "id": "US-005",
@@ -68,10 +86,12 @@
         "Responsive: 4 columns on desktop, 2 on mobile",
         "Renders FriendTile for each friend",
         "Shows empty state message when no friends",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 5,
-      "passes": true
+      "passes": true,
+      "tested": false
     },
     {
       "id": "US-006",
@@ -83,10 +103,12 @@
         "Emits 'add' event with name string",
         "Clears input after submission",
         "Validates: name cannot be empty",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 6,
-      "passes": true
+      "passes": true,
+      "tested": false
     },
     {
       "id": "US-007",
@@ -99,10 +121,12 @@
         "AddFriendForm 'add' event calls addFriend",
         "FriendTile 'contact' event calls updateLastContact",
         "App has proper title 'Friends Radar'",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 7,
-      "passes": true
+      "passes": true,
+      "tested": false
     },
     {
       "id": "US-008",
@@ -113,10 +137,12 @@
         "Or: right-click/long-press shows delete option",
         "Clicking delete removes friend from list",
         "Confirmation optional but nice to have",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 8,
-      "passes": true
+      "passes": true,
+      "tested": false
     },
     {
       "id": "US-009",
@@ -128,10 +154,12 @@
         "Hover/active states on tiles",
         "Smooth color transitions if possible",
         "Works well on mobile viewport",
+        "All tests pass (npm run test)",
         "npm run build passes"
       ],
       "priority": 9,
-      "passes": true
+      "passes": true,
+      "tested": false
     },
     {
       "id": "US-010",
@@ -146,7 +174,48 @@
         "Update README with live demo link"
       ],
       "priority": 10,
-      "passes": true
+      "passes": true,
+      "tested": false
+    },
+    {
+      "id": "US-011",
+      "title": "Add PWA support with notifications",
+      "description": "Make Friends Radar installable as a PWA with push notifications for overdue contacts",
+      "acceptanceCriteria": [
+        "Configure vite-plugin-pwa",
+        "Create app manifest with proper metadata",
+        "Generate PWA icons in multiple sizes (192x192, 512x512)",
+        "Custom radar-themed icon design",
+        "Service worker for offline support",
+        "Notification permission request UI",
+        "Smart notifications when friends are overdue (21+ seconds/days)",
+        "Notifications work on both desktop and mobile",
+        "All tests pass (npm run test)",
+        "npm run build passes"
+      ],
+      "priority": 11,
+      "passes": true,
+      "tested": false
+    },
+    {
+      "id": "US-012",
+      "title": "Implement comprehensive testing suite",
+      "description": "Add unit and component tests with automated test running in build process",
+      "acceptanceCriteria": [
+        "Install Vitest and Vue Test Utils",
+        "Configure test environment with happy-dom",
+        "Write unit tests for colorUtils",
+        "Write unit tests for useFriends composable",
+        "Write component tests for FriendTile",
+        "Fix color transition bug (green → yellow → red)",
+        "Update build script to run tests automatically",
+        "Create TESTING.md documentation",
+        "All 29 tests pass",
+        "npm run build requires tests to pass"
+      ],
+      "priority": 12,
+      "passes": true,
+      "tested": true
     }
   ]
 }

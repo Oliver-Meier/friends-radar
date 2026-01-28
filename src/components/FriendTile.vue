@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import type { Friend } from '../types/Friend'
 import { getContactColor } from '../utils/colorUtils'
 
@@ -12,7 +12,29 @@ const emit = defineEmits<{
   delete: [id: string]
 }>()
 
-const indicatorColor = computed(() => getContactColor(props.friend.lastContact))
+// Reactive time reference that updates every second
+const currentTime = ref(Date.now())
+let intervalId: number | undefined
+
+onMounted(() => {
+  // Update currentTime every second to trigger color recalculation
+  intervalId = window.setInterval(() => {
+    currentTime.value = Date.now()
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (intervalId !== undefined) {
+    clearInterval(intervalId)
+  }
+})
+
+// Now the computed property will re-evaluate when currentTime changes
+const indicatorColor = computed(() => {
+  // Use currentTime to make this reactive to time changes
+  currentTime.value
+  return getContactColor(props.friend.lastContact)
+})
 
 const handleClick = () => {
   emit('contact', props.friend.id)

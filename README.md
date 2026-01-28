@@ -183,15 +183,26 @@ This project is built using **[Ralph Loops](https://ghuntley.com/ralph/)** - an 
 # Start development server
 npm run dev
 
-# Build for production (required before commit)
+# Run tests (required before build)
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with UI
+npm run test:ui
+
+# Run tests with coverage
+npm run test:coverage
+
+# Build for production (runs tests first, then type checks, then builds)
 npm run build
 
 # Preview production build
 npm run preview
-
-# Type check (no build)
-npm run type-check
 ```
+
+**Important**: The build process now requires all tests to pass before proceeding. See [TESTING.md](TESTING.md) for details.
 
 ## 🎨 Customization
 
