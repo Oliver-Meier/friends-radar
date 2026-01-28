@@ -45,15 +45,15 @@ const handleContact = (id: string) => {
     <div class="legend">
       <div class="legend-item">
         <span class="legend-color green"></span>
-        <span>Green: 0-7 days</span>
+        <span>Green: 0-7 seconds (TESTING)</span>
       </div>
       <div class="legend-item">
         <span class="legend-color yellow"></span>
-        <span>Yellow: 7-21 days</span>
+        <span>Yellow: 7-21 seconds (TESTING)</span>
       </div>
       <div class="legend-item">
         <span class="legend-color red"></span>
-        <span>Red: 21+ days</span>
+        <span>Red: 21+ seconds (TESTING)</span>
       </div>
     </div>
   </div>
