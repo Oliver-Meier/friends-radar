@@ -9,7 +9,7 @@ import { useFriends } from './composables/useFriends'
 import { useNotifications } from './composables/useNotifications'
 import { useAuth } from './composables/useAuth'
 
-const { currentUser, isGuest, continueAsGuest } = useAuth()
+const { currentUser, isGuest, continueAsGuest, exitGuestMode } = useAuth()
 
 // Show app if user is logged in OR in guest mode
 const showApp = computed(() => currentUser.value !== null || isGuest.value)
@@ -39,6 +39,10 @@ const handleEnableNotifications = () => {
 const handleContinueAsGuest = () => {
   continueAsGuest()
 }
+
+const handleSignIn = () => {
+  exitGuestMode()
+}
 </script>
 
 <template>
@@ -55,9 +59,10 @@ const handleContinueAsGuest = () => {
       :syncError="syncError" 
     />
     
-    <!-- Guest mode indicator -->
+    <!-- Guest mode indicator with Sign In option -->
     <div v-else class="guest-banner">
-      📱 Guest Mode - Data stored locally on this device only
+      <span>📱 Guest Mode - Data stored locally on this device only</span>
+      <button @click="handleSignIn" class="sign-in-btn">Sign In</button>
     </div>
     
     <h1>Friends Radar</h1>
@@ -132,12 +137,33 @@ const handleContinueAsGuest = () => {
   right: 16px;
   background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
   color: white;
-  padding: 12px 20px;
+  padding: 10px 16px;
   border-radius: 12px;
   font-size: 0.875rem;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sign-in-btn {
+  background: white;
+  color: #f57c00;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sign-in-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 h1 {

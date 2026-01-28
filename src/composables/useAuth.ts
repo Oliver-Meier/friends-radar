@@ -152,6 +152,12 @@ export function useAuth() {
     setGuestMode(true)
   }
 
+  const exitGuestMode = () => {
+    // Exit guest mode to show login screen
+    isGuest.value = false
+    setGuestMode(false)
+  }
+
   onMounted(() => {
     initializeGoogleAuth()
   })
@@ -163,6 +169,7 @@ export function useAuth() {
     login,
     logout,
     continueAsGuest,
+    exitGuestMode,
     initializeGoogleAuth
   }
 }
