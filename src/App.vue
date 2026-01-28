@@ -1,18 +1,30 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import FriendTile from './components/FriendTile.vue'
+import { useFriends } from './composables/useFriends'
 
-// Demo friends with different contact times
-const now = Date.now()
-const demoFriends = [
-  { id: '1', name: 'Alice', lastContact: now }, // Green (today)
-  { id: '2', name: 'Bob', lastContact: now - (3 * 24 * 60 * 60 * 1000) }, // Green (3 days)
-  { id: '3', name: 'Charlie', lastContact: now - (10 * 24 * 60 * 60 * 1000) }, // Yellow (10 days)
-  { id: '4', name: 'Diana', lastContact: now - (30 * 24 * 60 * 60 * 1000) }, // Red (30 days)
-]
+const { friends, addFriend, updateLastContact } = useFriends()
+
+// Initialize demo friends if none exist
+onMounted(() => {
+  if (friends.value.length === 0) {
+    const now = Date.now()
+    addFriend('Alice')
+    addFriend('Bob')
+    addFriend('Charlie')
+    addFriend('Diana')
+    
+    // Manually set their lastContact times for demo
+    if (friends.value[0]) friends.value[0].lastContact = now // Green (today)
+    if (friends.value[1]) friends.value[1].lastContact = now - (3 * 24 * 60 * 60 * 1000) // Green (3 days)
+    if (friends.value[2]) friends.value[2].lastContact = now - (10 * 24 * 60 * 60 * 1000) // Yellow (10 days)
+    if (friends.value[3]) friends.value[3].lastContact = now - (30 * 24 * 60 * 60 * 1000) // Red (30 days)
+  }
+})
 
 const handleContact = (id: string) => {
-  console.log('Contacted friend with ID:', id)
-  alert(`You contacted friend ${id}! In the full app, this would update their lastContact time.`)
+  updateLastContact(id)
+  console.log('Updated contact time for friend:', id)
 }
 </script>
 
@@ -23,7 +35,7 @@ const handleContact = (id: string) => {
     
     <div class="demo-grid">
       <FriendTile 
-        v-for="friend in demoFriends" 
+        v-for="friend in friends" 
         :key="friend.id"
         :friend="friend"
         @contact="handleContact"

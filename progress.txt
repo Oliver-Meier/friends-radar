@@ -35,4 +35,92 @@
 9. US-009: Polish styling
 
 ---
+
+## Iteration 1 - 2026-01-28
+- Story: US-001 - Create Friend data model and types
+- Status: Completed
+- Changes: 
+  - Created Friend interface in src/types/Friend.ts (id, name, lastContact)
+  - Created useFriends composable in src/composables/useFriends.ts
+  - Composable provides reactive friends ref and addFriend, removeFriend, updateLastContact functions
+  - Used crypto.randomUUID() for unique IDs
+  - npm run build passes successfully
+
+### Learnings
+- Project structure: src/types/ for interfaces, src/composables/ for Vue composables
+- crypto.randomUUID() is available in modern browsers for ID generation
+- Composable follows Vue 3 Composition API pattern with shared reactive state
+
+### Next Up
+- US-002: localStorage persistence layer
+
+---
+
+## Iteration 2 - 2026-01-28
+- Story: US-002 - Implement localStorage persistence
+- Status: Completed
+- Changes:
+  - Added loadFriends() function to load from localStorage on init
+  - Added saveFriends() function to save to localStorage
+  - Used Vue's watch() with deep: true to auto-save on any change
+  - Storage key: 'friends-radar-data'
+  - Try-catch blocks handle invalid JSON and storage errors gracefully
+  - npm run build passes successfully
+
+### Learnings
+- Vue's watch with { deep: true } tracks nested array changes automatically
+- localStorage persistence pattern: load on init, watch for changes to save
+- Always handle localStorage errors (quota exceeded, JSON parse errors, etc.)
+
+### Next Up
+- US-003: Color calculation utility
+
+---
+
+## Iteration 3 - 2026-01-28
+- Story: US-003 - Create color calculation utility
+- Status: Completed
+- Changes:
+  - Created src/utils/colorUtils.ts with getContactColor function
+  - Function calculates days since last contact and returns appropriate color
+  - Green: 0-7 days, Yellow: 7-21 days, Red: 21+ days
+  - Exported ContactColor type for type safety
+  - Used clear constants for thresholds (GREEN_THRESHOLD_DAYS, YELLOW_THRESHOLD_DAYS)
+  - npm run build passes successfully
+
+### Learnings
+- Utility functions should be in src/utils/ directory
+- Export types alongside functions for better TypeScript experience
+- Use clear constant names for magic numbers (thresholds)
+- Document function purpose and parameters with JSDoc comments
+
+### Next Up
+- US-004: FriendTile component
+
+---
+
+## Iteration 4 - 2026-01-28
+- Story: US-004 - Create FriendTile component
+- Status: Completed
+- Changes:
+  - Created FriendTile.vue component in src/components/
+  - Accepts Friend prop with TypeScript type checking
+  - Displays circular color indicator (80px diameter)
+  - Uses getContactColor utility via computed property
+  - Emits 'contact' event with friend ID on click
+  - Styled with hover/active states and glowing effects
+  - Added demo to App.vue showing all three colors (green/yellow/red)
+  - npm run build passes successfully
+
+### Learnings
+- Vue 3 Composition API with <script setup> makes components very clean
+- computed() is ideal for derived values like color
+- Scoped CSS isolates component styles
+- CSS transitions on transform create smooth hover effects
+- box-shadow with color opacity creates nice glow effects
+
+### Next Up
+- US-005: FriendsGrid component
+
+---
 (Future iterations will append their learnings here)
