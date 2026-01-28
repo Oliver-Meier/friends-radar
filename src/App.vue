@@ -97,6 +97,8 @@ h1 {
   padding: 20px;
   background: #f5f5f5;
   border-radius: 8px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .legend-item {
