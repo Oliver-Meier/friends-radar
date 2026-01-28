@@ -46,20 +46,35 @@ const handleDelete = (id: string) => {
 .friends-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 24px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
   .friends-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
 }
 
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
-  color: #999;
+  padding: 80px 20px;
+  color: #888;
   font-size: 18px;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .empty-state p {

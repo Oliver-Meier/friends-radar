@@ -44,53 +44,61 @@ const handleDelete = (event: Event) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
+  gap: 14px;
+  padding: 20px 16px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
   outline: none;
   position: relative;
   touch-action: manipulation;
+  border-radius: 12px;
+  background: #fafafa;
 }
 
 .friend-tile:hover {
   transform: scale(1.05);
+  background: #f5f5f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .friend-tile:active {
-  transform: scale(0.95);
+  transform: scale(0.98);
+  background: #f0f0f0;
 }
 
 .delete-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 28px;
-  height: 28px;
+  top: 6px;
+  right: 6px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(244, 67, 54, 0.9);
+  background: rgba(244, 67, 54, 0.95);
   color: white;
   border: none;
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   -webkit-user-select: none;
   padding: 0;
   touch-action: manipulation;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
 }
 
 @media (max-width: 768px) {
   .delete-btn {
-    opacity: 1;
+    opacity: 0.9;
+    top: 4px;
+    right: 4px;
   }
 }
 
@@ -100,42 +108,45 @@ const handleDelete = (event: Event) => {
 
 .delete-btn:hover {
   background: #f44336;
-  transform: scale(1.1);
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
 }
 
 .delete-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
 }
 
 .indicator {
-  width: 80px;
-  height: 80px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
-  border: 4px solid #e0e0e0;
-  transition: all 0.3s ease;
+  border: 5px solid #ffffff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }
 
 .indicator.green {
   background-color: #4caf50;
-  box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 0 24px rgba(76, 175, 80, 0.6);
 }
 
 .indicator.yellow {
   background-color: #ffc107;
-  box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 0 24px rgba(255, 193, 7, 0.6);
 }
 
 .indicator.red {
   background-color: #f44336;
-  box-shadow: 0 0 20px rgba(244, 67, 54, 0.5);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 0 24px rgba(244, 67, 54, 0.6);
 }
 
 .name {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   color: #1a1a1a;
   text-align: center;
   pointer-events: none;
+  letter-spacing: -0.01em;
 }
 </style>

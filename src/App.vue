@@ -46,57 +46,65 @@ const handleDeleteFriend = (id: string) => {
 
 <style scoped>
 .app {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 48px 24px;
   text-align: center;
+  min-height: 100vh;
 }
 
 h1 {
   color: #1a1a1a;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   user-select: none;
   -webkit-user-select: none;
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   color: #4a4a4a;
-  margin-bottom: 40px;
+  margin-bottom: 56px;
   user-select: none;
   -webkit-user-select: none;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 :deep(.friends-grid-container) {
-  margin-bottom: 40px;
+  margin-bottom: 56px;
 }
 
 .legend {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 30px;
-  padding: 20px;
-  background: #f5f5f5;
-  border-radius: 8px;
+  gap: 32px;
+  padding: 24px 32px;
+  background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+  border-radius: 12px;
   user-select: none;
   -webkit-user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: #2a2a2a;
   font-weight: 500;
+  font-size: 15px;
 }
 
 .legend-color {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  border: 2px solid #e0e0e0;
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .legend-color.green {
@@ -109,5 +117,29 @@ h1 {
 
 .legend-color.red {
   background-color: #f44336;
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding: 32px 16px;
+  }
+  
+  h1 {
+    font-size: 2.25rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    margin-bottom: 40px;
+  }
+  
+  .legend {
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .legend-item {
+    font-size: 14px;
+  }
 }
 </style>
