@@ -8,7 +8,7 @@
 
 **ALL CODE CHANGES MUST:**
 
-1. ✅ **Pass all tests** - Run `npm run test` (29 tests must pass)
+1. ✅ **Pass all tests** - Run `npm run test` (33 tests must pass)
 2. ✅ **Pass build** - Run `npm run build` (automatically runs tests + type check + build)
 3. ✅ **Include tests** - Write tests for ANY new functionality
 4. ✅ **Update tests** - Fix/update tests if changing existing code
@@ -80,7 +80,7 @@ Run `npm run build` to verify - it will:
 See `TESTING.md` for comprehensive testing documentation.
 
 ### Current Test Coverage
-- **29 tests** across 3 test suites
+- **33 tests** across 3 test suites
 - Unit tests: colorUtils, useFriends
 - Component tests: FriendTile
 - All tests must pass for build to succeed
@@ -132,7 +132,7 @@ If you're running in the Ralph loop:
 1. Read `prd.json` → Find highest priority story with `passes: false`
 2. Implement ONLY that story
 3. **Write tests** for any new functionality
-4. Run `npm run test` → All 29+ tests must pass
+4. Run `npm run test` → All 33+ tests must pass
 5. Run `npm run build` → Must pass (includes tests)
 6. Commit with descriptive message
 7. Update `prd.json` → Set `passes: true` and `tested: true`

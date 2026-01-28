@@ -35,9 +35,12 @@ watch(friends, (newFriends) => {
 
 export function useFriends() {
   const addFriend = (name: string): void => {
+    // Capitalize first letter, keep rest as entered
+    const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+    
     const newFriend: Friend = {
       id: crypto.randomUUID(),
-      name,
+      name: capitalizedName,
       lastContact: Date.now()
     }
     friends.value.push(newFriend)

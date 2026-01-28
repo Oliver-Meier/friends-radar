@@ -74,6 +74,44 @@ describe('useFriends', () => {
       expect(friends.value[0]?.lastContact).toBeDefined()
     })
 
+    it('capitalizes first letter of friend name', () => {
+      const { friends, addFriend } = useFriends()
+      friends.value = []
+      
+      addFriend('alice')
+      
+      expect(friends.value[0]?.name).toBe('Alice')
+    })
+
+    it('converts rest of name to lowercase', () => {
+      const { friends, addFriend } = useFriends()
+      friends.value = []
+      
+      addFriend('DAVID')
+      
+      expect(friends.value[0]?.name).toBe('David')
+    })
+
+    it('handles mixed case names correctly', () => {
+      const { friends, addFriend } = useFriends()
+      friends.value = []
+      
+      addFriend('bOb')
+      addFriend('JoHn')
+      
+      expect(friends.value[0]?.name).toBe('Bob')
+      expect(friends.value[1]?.name).toBe('John')
+    })
+
+    it('preserves already properly capitalized names', () => {
+      const { friends, addFriend } = useFriends()
+      friends.value = []
+      
+      addFriend('Sarah')
+      
+      expect(friends.value[0]?.name).toBe('Sarah')
+    })
+
     it('sets lastContact to current time', () => {
       const now = Date.now()
       const { friends, addFriend } = useFriends()

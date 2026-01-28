@@ -236,6 +236,24 @@
       "priority": 13,
       "passes": true,
       "tested": true
+    },
+    {
+      "id": "US-014",
+      "title": "Auto-capitalize friend names",
+      "description": "Ensure friend names always start with uppercase letter for consistency",
+      "acceptanceCriteria": [
+        "Friend names are capitalized when added (first letter uppercase)",
+        "Works for names entered in lowercase",
+        "Works for names entered in UPPERCASE",
+        "Works for names already in proper case",
+        "Capitalization happens in addFriend function",
+        "Write tests for capitalization logic",
+        "All tests pass (npm run test)",
+        "npm run build passes"
+      ],
+      "priority": 14,
+      "passes": true,
+      "tested": true
     }
   ]
 }
