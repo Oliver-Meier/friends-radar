@@ -252,4 +252,73 @@
 - US-010: Deploy to Render.com (ready to deploy!)
 
 ---
+
+## Iteration 9 - 2026-01-28
+- Story: US-009 - Polish styling and UX
+- Status: Completed
+- Changes:
+  
+  **FriendTile polish:**
+  - Increased indicator size (88px) with white border and shadow
+  - Added background tile (#fafafa) with rounded corners (12px)
+  - Enhanced hover effects with box-shadow
+  - Smooth color transitions (0.5s cubic-bezier easing)
+  - Larger, more visible delete button (32px)
+  - Better glow effects on all color indicators
+  - Improved letter spacing on names
+  
+  **AddFriendForm polish:**
+  - Gradient button background for modern premium look
+  - Enhanced focus state with green ring glow effect
+  - Input lift animation on focus
+  - Better shadow depth and layering
+  - Larger touch targets on mobile
+  - Smooth cubic-bezier transitions
+  
+  **FriendsGrid polish:**
+  - Added fadeIn animation when grid loads
+  - Increased gap spacing (24px desktop, 16px mobile)
+  - Enhanced empty state with better padding
+  - Smooth entrance animation
+  
+  **App.vue polish:**
+  - Increased max-width to 900px for better layout
+  - Better spacing rhythm (48px, 56px margins)
+  - Gradient background on legend with shadow
+  - Larger legend circles (24px) with white borders
+  - Enhanced typography with letter-spacing
+  - Responsive font sizes for mobile
+  - Legend wraps on narrow screens
+  
+  **Overall improvements:**
+  - All transitions use cubic-bezier for smooth, natural easing
+  - Consistent 8px spacing rhythm throughout
+  - Enhanced depth with shadows and layering
+  - Professional hover/active states everywhere
+  - Clean, minimal, modern aesthetic
+  - Excellent mobile viewport support
+  - npm run build passes successfully
+
+### Learnings
+- cubic-bezier(0.4, 0, 0.2, 1) provides smooth, natural easing
+- Consistent spacing rhythm (8px multiples) creates visual harmony
+- Subtle gradients add depth without being distracting
+- Box shadows create hierarchy and depth perception
+- fadeIn animations on load improve perceived performance
+- White borders on colored elements increase contrast and polish
+- Letter spacing improves readability at larger sizes
+- Multiple box-shadows can layer (elevation + glow)
+
+### Acceptance Criteria Verification
+✅ Clean, minimal design - Modern, uncluttered interface
+✅ Proper spacing and padding - 8px rhythm, generous margins
+✅ Hover/active states on tiles - Smooth scale, shadow, background
+✅ Smooth color transitions - 0.5s cubic-bezier on indicators
+✅ Works well on mobile viewport - Responsive, touch-optimized
+✅ npm run build passes
+
+### Next Up
+- US-010: Deploy to Render.com (final step!)
+
+---
 (Future iterations will append their learnings here)
