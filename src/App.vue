@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import FriendsGrid from './components/FriendsGrid.vue'
+import AddFriendForm from './components/AddFriendForm.vue'
 import { useFriends } from './composables/useFriends'
 
 const { friends, addFriend, updateLastContact } = useFriends()
@@ -65,6 +66,11 @@ const handleContact = (id: string) => {
   console.log('Updated contact time for friend:', id)
 }
 
+const handleAddFriend = (name: string) => {
+  addFriend(name)
+  console.log('Added friend:', name)
+}
+
 const resetDemo = () => {
   localStorage.clear()
   location.reload()
@@ -77,6 +83,8 @@ const resetDemo = () => {
     <p class="subtitle">Click on a friend to record contact</p>
     
     <button @click="resetDemo" class="reset-btn">Reset Demo (25 friends)</button>
+    
+    <AddFriendForm @add="handleAddFriend" />
     
     <FriendsGrid :friends="friends" @contact="handleContact" />
 
