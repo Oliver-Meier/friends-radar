@@ -1,0 +1,17 @@
+{
+  "branchName": "feature/initial-setup",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Project initialized with Vue + TypeScript",
+      "description": "Initial project scaffolding with Vite, Vue 3, and TypeScript",
+      "acceptanceCriteria": [
+        "Vite development server runs without errors",
+        "TypeScript compilation succeeds",
+        "Default Vue app renders in browser"
+      ],
+      "priority": 1,
+      "passes": true
+    }
+  ]
+}

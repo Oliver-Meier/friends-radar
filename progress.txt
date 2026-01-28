@@ -1,0 +1,13 @@
+# Progress Log - Friends Radar
+
+## Iteration 0 - Initial Setup (Manual)
+- Project created with Vite + Vue 3 + TypeScript
+- Ralph loop structure initialized
+- All development tooling in place
+
+### Learnings
+- Use `npm run build` to verify TypeScript compilation
+- Keep stories small - one component or one feature per story
+
+---
+(Future iterations will append their learnings here)
