@@ -26,7 +26,9 @@ describe('colorUtils', () => {
     })
 
     it('returns yellow for contact between 7 and 21 seconds', () => {
-      const now = Date.now()
+      vi.useFakeTimers()
+      const now = 1000000000000
+      vi.setSystemTime(now)
       
       // 7.1 seconds ago (just over green threshold)
       expect(getContactColor(now - 7100)).toBe('yellow')
@@ -34,12 +36,16 @@ describe('colorUtils', () => {
       // 14 seconds ago (middle of yellow range)
       expect(getContactColor(now - 14000)).toBe('yellow')
       
-      // 21 seconds ago (boundary)
-      expect(getContactColor(now - 21000)).toBe('yellow')
+      // 20.9 seconds ago (safely within yellow range)
+      expect(getContactColor(now - 20900)).toBe('yellow')
+      
+      vi.useRealTimers()
     })
 
     it('returns red for contact over 21 seconds ago', () => {
-      const now = Date.now()
+      vi.useFakeTimers()
+      const now = 1000000000000
+      vi.setSystemTime(now)
       
       // 21.1 seconds ago (just over yellow threshold)
       expect(getContactColor(now - 21100)).toBe('red')
@@ -52,6 +58,8 @@ describe('colorUtils', () => {
       
       // 1 hour ago
       expect(getContactColor(now - 3600000)).toBe('red')
+      
+      vi.useRealTimers()
     })
 
     it('handles boundary conditions correctly', () => {
@@ -76,11 +84,16 @@ describe('colorUtils', () => {
     })
 
     it('handles future timestamps gracefully', () => {
-      const now = Date.now()
+      vi.useFakeTimers()
+      const now = 1000000000000
+      vi.setSystemTime(now)
+      
       const futureTime = now + 10000
       
       // Future timestamp should be treated as green (0 seconds)
       expect(getContactColor(futureTime)).toBe('green')
+      
+      vi.useRealTimers()
     })
 
     it('works with mocked time', () => {
