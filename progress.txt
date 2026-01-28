@@ -10,4 +10,29 @@
 - Keep stories small - one component or one feature per story
 
 ---
+
+## Feature Planning - Core Friends Radar (Manual)
+- Feature spec created: `specs/core-friends-radar.md`
+- Visual mockup provided showing traffic-light style friend tiles
+- PRD created with 9 user stories broken down for Ralph loop
+
+### Feature Overview
+- Store friends with first names
+- Persist to localStorage
+- Display as tile grid with color indicators
+- Green (0-7 days) → Yellow (7-21 days) → Red (21+ days)
+- Click to record contact (reset to green)
+
+### Stories Ready for Implementation
+1. US-001: Friend data model and types
+2. US-002: localStorage persistence
+3. US-003: Color calculation utility
+4. US-004: FriendTile component
+5. US-005: FriendsGrid component
+6. US-006: AddFriendForm component
+7. US-007: App.vue integration
+8. US-008: Delete friend functionality
+9. US-009: Polish styling
+
+---
 (Future iterations will append their learnings here)

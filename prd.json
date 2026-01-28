@@ -1,17 +1,137 @@
 {
-  "branchName": "feature/initial-setup",
+  "branchName": "feature/core-friends-radar",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Project initialized with Vue + TypeScript",
-      "description": "Initial project scaffolding with Vite, Vue 3, and TypeScript",
+      "title": "Create Friend data model and types",
+      "description": "Define TypeScript interfaces for Friend entity and create a composable for managing friends state",
       "acceptanceCriteria": [
-        "Vite development server runs without errors",
-        "TypeScript compilation succeeds",
-        "Default Vue app renders in browser"
+        "Friend interface with id (string), name (string), lastContact (number/timestamp)",
+        "useFriends composable created in src/composables/",
+        "Composable provides: friends ref, addFriend, removeFriend, updateLastContact functions",
+        "npm run build passes"
       ],
       "priority": 1,
-      "passes": true
+      "passes": false
+    },
+    {
+      "id": "US-002",
+      "title": "Implement localStorage persistence",
+      "description": "Add persistence to useFriends composable so friends list survives browser refresh",
+      "acceptanceCriteria": [
+        "Friends array saved to localStorage on every change",
+        "Friends loaded from localStorage on app init",
+        "Uses key 'friends-radar-data'",
+        "Handles empty/invalid localStorage gracefully",
+        "npm run build passes"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-003",
+      "title": "Create color calculation utility",
+      "description": "Utility function to determine indicator color based on lastContact timestamp",
+      "acceptanceCriteria": [
+        "Function getContactColor(lastContact: number) returns 'green' | 'yellow' | 'red'",
+        "Green: contacted within 7 days",
+        "Yellow: contacted 7-21 days ago",
+        "Red: not contacted for 21+ days",
+        "Located in src/utils/colorUtils.ts",
+        "npm run build passes"
+      ],
+      "priority": 3,
+      "passes": false
+    },
+    {
+      "id": "US-004",
+      "title": "Create FriendTile component",
+      "description": "Vue component displaying a single friend with name and color indicator",
+      "acceptanceCriteria": [
+        "Component accepts friend prop (Friend type)",
+        "Displays circular color indicator (traffic light style)",
+        "Shows friend name below indicator",
+        "Indicator color determined by getContactColor utility",
+        "Emits 'contact' event when clicked",
+        "Styled with CSS (no external UI library needed)",
+        "npm run build passes"
+      ],
+      "priority": 4,
+      "passes": false
+    },
+    {
+      "id": "US-005",
+      "title": "Create FriendsGrid component",
+      "description": "Grid container component that displays all friend tiles",
+      "acceptanceCriteria": [
+        "Uses CSS Grid for layout",
+        "Responsive: 4 columns on desktop, 2 on mobile",
+        "Renders FriendTile for each friend",
+        "Shows empty state message when no friends",
+        "npm run build passes"
+      ],
+      "priority": 5,
+      "passes": false
+    },
+    {
+      "id": "US-006",
+      "title": "Create AddFriendForm component",
+      "description": "Simple form to add a new friend by name",
+      "acceptanceCriteria": [
+        "Text input for friend name",
+        "Add button (or Enter key) to submit",
+        "Emits 'add' event with name string",
+        "Clears input after submission",
+        "Validates: name cannot be empty",
+        "npm run build passes"
+      ],
+      "priority": 6,
+      "passes": false
+    },
+    {
+      "id": "US-007",
+      "title": "Integrate components in App.vue",
+      "description": "Wire up all components in main App.vue with useFriends composable",
+      "acceptanceCriteria": [
+        "App.vue uses useFriends composable",
+        "Renders AddFriendForm at top",
+        "Renders FriendsGrid with friends list",
+        "AddFriendForm 'add' event calls addFriend",
+        "FriendTile 'contact' event calls updateLastContact",
+        "App has proper title 'Friends Radar'",
+        "npm run build passes"
+      ],
+      "priority": 7,
+      "passes": false
+    },
+    {
+      "id": "US-008",
+      "title": "Add delete friend functionality",
+      "description": "Allow users to remove friends from the list",
+      "acceptanceCriteria": [
+        "FriendTile has delete button (small X or trash icon)",
+        "Or: right-click/long-press shows delete option",
+        "Clicking delete removes friend from list",
+        "Confirmation optional but nice to have",
+        "npm run build passes"
+      ],
+      "priority": 8,
+      "passes": false
+    },
+    {
+      "id": "US-009",
+      "title": "Polish styling and UX",
+      "description": "Final styling pass to match mockup aesthetic",
+      "acceptanceCriteria": [
+        "Clean, minimal design",
+        "Proper spacing and padding",
+        "Hover/active states on tiles",
+        "Smooth color transitions if possible",
+        "Works well on mobile viewport",
+        "npm run build passes"
+      ],
+      "priority": 9,
+      "passes": false
     }
   ]
 }
