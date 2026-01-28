@@ -132,6 +132,21 @@
       ],
       "priority": 9,
       "passes": false
+    },
+    {
+      "id": "US-010",
+      "title": "Deploy to Render.com",
+      "description": "Deploy the Friends Radar app to Render.com for public access",
+      "acceptanceCriteria": [
+        "Create render.yaml configuration file",
+        "Configure build command (npm run build)",
+        "Configure static site settings",
+        "Deploy to Render.com",
+        "Verify app loads and works online",
+        "Update README with live demo link"
+      ],
+      "priority": 10,
+      "passes": false
     }
   ]
 }
