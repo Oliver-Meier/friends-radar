@@ -64,12 +64,19 @@ const handleContact = (id: string) => {
   updateLastContact(id)
   console.log('Updated contact time for friend:', id)
 }
+
+const resetDemo = () => {
+  localStorage.clear()
+  location.reload()
+}
 </script>
 
 <template>
   <div class="app">
     <h1>Friends Radar - Demo</h1>
     <p class="subtitle">Click on a friend to record contact</p>
+    
+    <button @click="resetDemo" class="reset-btn">Reset Demo (25 friends)</button>
     
     <FriendsGrid :friends="friends" @contact="handleContact" />
 
@@ -107,9 +114,32 @@ h1 {
 
 .subtitle {
   color: #666;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.reset-btn {
+  padding: 10px 20px;
+  margin-bottom: 30px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.reset-btn:hover {
+  background: #d32f2f;
+}
+
+.reset-btn:active {
+  transform: scale(0.98);
 }
 
 :deep(.friends-grid-container) {
