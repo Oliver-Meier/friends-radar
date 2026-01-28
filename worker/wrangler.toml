@@ -1,0 +1,9 @@
+name = "friends-radar-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "friends-radar-db"
+database_id = "a18f8c01-6827-43f5-ad69-c4053042e9ef"

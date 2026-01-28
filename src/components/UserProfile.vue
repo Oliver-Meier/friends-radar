@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { useAuth } from '../composables/useAuth'
+import SyncIndicator from './SyncIndicator.vue'
+
+defineProps<{
+  isSyncing?: boolean
+  isOnline?: boolean
+  syncError?: string | null
+}>()
 
 const { currentUser, logout } = useAuth()
 
@@ -17,20 +24,35 @@ const handleLogout = () => {
       <div v-else class="user-avatar-placeholder">{{ currentUser.name.charAt(0) }}</div>
       <span class="user-name">{{ currentUser.name }}</span>
     </div>
-    <button @click="handleLogout" class="logout-button">Sign Out</button>
+    <div class="actions">
+      <SyncIndicator 
+        :isSyncing="isSyncing || false" 
+        :isOnline="isOnline !== undefined ? isOnline : true"
+        :syncError="syncError || null"
+      />
+      <button @click="handleLogout" class="logout-button">Sign Out</button>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .user-profile {
+  position: fixed;
+  top: 24px;
+  right: 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
-  border-radius: 12px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  gap: 16px;
+  padding: 12px 20px;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .user-info {
@@ -40,16 +62,16 @@ const handleLogout = () => {
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .user-avatar-placeholder {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -57,50 +79,72 @@ const handleLogout = () => {
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 1.25rem;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-size: 1.1rem;
+  border: 2px solid #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .user-name {
   color: #2a2a2a;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logout-button {
-  background: white;
+  background: transparent;
   color: #667eea;
   border: 2px solid #667eea;
-  padding: 8px 20px;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .logout-button:hover {
   background: #667eea;
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transform: scale(1.05);
 }
 
 .logout-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
+  transform: scale(0.98);
 }
 
 @media (max-width: 768px) {
   .user-profile {
-    padding: 12px 16px;
-    flex-direction: column;
-    gap: 16px;
+    top: 16px;
+    right: 16px;
+    padding: 10px 16px;
+    gap: 12px;
+  }
+  
+  .user-name {
+    display: none;
+  }
+  
+  .user-avatar,
+  .user-avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
   }
   
   .logout-button {
-    width: 100%;
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 }
 </style>

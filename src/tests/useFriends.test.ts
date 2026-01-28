@@ -1,6 +1,28 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { useFriends } from '../composables/useFriends'
 
+// Mock Cloudflare sync to avoid API dependencies in tests
+vi.mock('../composables/useCloudflareSync', () => ({
+  useCloudflareSync: () => ({
+    isSyncing: { value: false },
+    syncError: { value: null },
+    isOnline: { value: true },
+    syncFriendToCloudflare: vi.fn().mockResolvedValue(undefined),
+    deleteFriendFromCloudflare: vi.fn().mockResolvedValue(undefined),
+    loadFriendsFromCloudflare: vi.fn().mockResolvedValue([]),
+    syncAllFriendsToCloudflare: vi.fn().mockResolvedValue(undefined),
+    startPolling: vi.fn(),
+    stopPolling: vi.fn()
+  })
+}))
+
+// Mock useAuth to avoid Google Auth dependencies in tests
+vi.mock('../composables/useAuth', () => ({
+  useAuth: () => ({
+    currentUser: { value: null }
+  })
+}))
+
 describe('useFriends', () => {
   beforeEach(() => {
     // Clear localStorage before each test
@@ -359,10 +381,11 @@ describe('useFriends', () => {
 
     it('uses default storage key when no userId provided', async () => {
       localStorage.clear()
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+      // Create a completely fresh instance by not passing userId
+      const { friends: friends1, addFriend: addFriend1 } = useFriends()
+      friends1.value = [] // Reset any existing state
       
-      addFriend('Alice')
+      addFriend1('Alice')
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))

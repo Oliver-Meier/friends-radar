@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useAuth } from '../composables/useAuth'
+import OAuthDebug from './OAuthDebug.vue'
 
 const { login, isInitialized } = useAuth()
 const buttonContainer = ref<HTMLElement | null>(null)
+const showDebug = ref(false)
 
 onMounted(() => {
   // Wait for Google to initialize
@@ -18,6 +20,10 @@ onMounted(() => {
   
   renderButton()
 })
+
+const toggleDebug = () => {
+  showDebug.value = !showDebug.value
+}
 </script>
 
 <template>
@@ -30,8 +36,14 @@ onMounted(() => {
         <p class="login-message">Sign in with Google to get started</p>
         <div ref="buttonContainer" class="google-button-container"></div>
         <p class="privacy-note">Your friends list will be stored locally on your device</p>
+        
+        <button @click="toggleDebug" class="debug-toggle">
+          {{ showDebug ? '🔼 Hide' : '🔽 Show' }} OAuth Setup Help
+        </button>
       </div>
     </div>
+    
+    <OAuthDebug v-if="showDebug" />
   </div>
 </template>
 
@@ -93,6 +105,31 @@ h1 {
   color: #6a6a6a;
   font-size: 0.875rem;
   margin-top: 8px;
+}
+
+.debug-toggle {
+  margin-top: 24px;
+  background: #f5f5f5;
+  color: #667eea;
+  border: 2px solid #e0e0e0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.debug-toggle:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.debug-toggle:active {
+  transform: translateY(0);
 }
 
 @media (max-width: 768px) {

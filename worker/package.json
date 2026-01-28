@@ -1,0 +1,20 @@
+{
+  "name": "friends-radar-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker API for Friends Radar",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create friends-radar-db",
+    "db:init": "wrangler d1 execute friends-radar-db --file=./schema.sql",
+    "db:query": "wrangler d1 execute friends-radar-db --command"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "wrangler": "^3.95.0"
+  }
+}
