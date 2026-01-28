@@ -216,6 +216,26 @@
       "priority": 12,
       "passes": true,
       "tested": true
+    },
+    {
+      "id": "US-013",
+      "title": "Set up CI/CD with GitHub Actions",
+      "description": "Automate testing and deployment with GitHub Actions workflow",
+      "acceptanceCriteria": [
+        "Create .github/workflows/ci.yml for continuous integration",
+        "Run tests on every push and pull request",
+        "Run tests on multiple Node.js versions (18.x, 20.x)",
+        "Type check with TypeScript on CI",
+        "Build application on CI",
+        "Fail CI if tests fail",
+        "Add GitHub Actions badge to README",
+        "Optional: Deploy to GitHub Pages on main branch",
+        "All tests pass (npm run test)",
+        "npm run build passes"
+      ],
+      "priority": 13,
+      "passes": true,
+      "tested": true
     }
   ]
 }

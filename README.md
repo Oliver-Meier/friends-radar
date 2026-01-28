@@ -3,9 +3,13 @@
 A Vue.js app that helps you track when you last contacted your friends using a simple traffic light system. Never lose touch with the people who matter most!
 
 ![Friends Radar Demo](https://img.shields.io/badge/status-active-success.svg)
+[![CI/CD](https://github.com/Oliver-Meier/friends-radar/actions/workflows/ci.yml/badge.svg)](https://github.com/Oliver-Meier/friends-radar/actions/workflows/ci.yml)
 ![Vue 3](https://img.shields.io/badge/Vue-3.x-4FC08D?logo=vue.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?logo=vite)
+![Tests](https://img.shields.io/badge/tests-29%20passing-brightgreen)
+
+🚀 **[Live Demo](https://oliver-meier.github.io/friends-radar/)**
 
 ## 🌟 Overview
 

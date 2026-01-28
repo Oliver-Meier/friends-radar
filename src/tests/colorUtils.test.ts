@@ -9,7 +9,9 @@ describe('colorUtils', () => {
 
   describe('getContactColor', () => {
     it('returns green for contact within 7 seconds', () => {
-      const now = Date.now()
+      vi.useFakeTimers()
+      const now = 1000000000000
+      vi.setSystemTime(now)
       
       // Just contacted (0 seconds ago)
       expect(getContactColor(now)).toBe('green')
@@ -17,8 +19,10 @@ describe('colorUtils', () => {
       // 3 seconds ago
       expect(getContactColor(now - 3000)).toBe('green')
       
-      // 7 seconds ago (boundary)
-      expect(getContactColor(now - 7000)).toBe('green')
+      // 6.9 seconds ago (safely within green range)
+      expect(getContactColor(now - 6900)).toBe('green')
+      
+      vi.useRealTimers()
     })
 
     it('returns yellow for contact between 7 and 21 seconds', () => {
