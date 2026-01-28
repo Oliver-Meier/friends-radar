@@ -10,9 +10,9 @@ import { useAuth } from './composables/useAuth'
 
 const { currentUser } = useAuth()
 
-// Pass userId to useFriends to scope data per user
+// Pass userId to useFriends to scope data per user (as reactive ref)
 const userId = computed(() => currentUser.value?.id)
-const { friends, addFriend, updateLastContact, removeFriend, isSyncing, syncError, isOnline } = useFriends(userId.value)
+const { friends, addFriend, updateLastContact, removeFriend, isSyncing, syncError, isOnline } = useFriends(userId)
 const { notificationsEnabled, requestPermission, isNotificationSupported, overdueFriends, isSafari, isIOS } = useNotifications(friends)
 
 const handleContact = (id: string) => {

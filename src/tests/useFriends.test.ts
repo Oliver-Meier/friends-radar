@@ -1,12 +1,13 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import { ref, nextTick } from 'vue'
 import { useFriends } from '../composables/useFriends'
 
 // Mock Cloudflare sync to avoid API dependencies in tests
 vi.mock('../composables/useCloudflareSync', () => ({
   useCloudflareSync: () => ({
-    isSyncing: { value: false },
-    syncError: { value: null },
-    isOnline: { value: true },
+    isSyncing: ref(false),
+    syncError: ref(null),
+    isOnline: ref(true),
     syncFriendToCloudflare: vi.fn().mockResolvedValue(undefined),
     deleteFriendFromCloudflare: vi.fn().mockResolvedValue(undefined),
     loadFriendsFromCloudflare: vi.fn().mockResolvedValue([]),
@@ -19,7 +20,7 @@ vi.mock('../composables/useCloudflareSync', () => ({
 // Mock useAuth to avoid Google Auth dependencies in tests
 vi.mock('../composables/useAuth', () => ({
   useAuth: () => ({
-    currentUser: { value: null }
+    currentUser: ref(null)
   })
 }))
 
@@ -28,10 +29,6 @@ describe('useFriends', () => {
     // Clear localStorage before each test
     localStorage.clear()
     vi.clearAllMocks()
-    
-    // Clear any existing friends state
-    const { friends } = useFriends()
-    friends.value = []
   })
 
   afterEach(() => {
@@ -39,25 +36,20 @@ describe('useFriends', () => {
   })
 
   it('initializes with empty friends array when localStorage is empty', () => {
-    localStorage.clear()
-    const { friends } = useFriends()
-    // Clear the singleton state
-    friends.value = []
+    const userIdRef = ref<string | undefined>(undefined)
+    const { friends } = useFriends(userIdRef)
     expect(friends.value).toEqual([])
   })
 
-  it('loads friends from localStorage on initialization', () => {
-    localStorage.clear()
+  it('loads friends from localStorage on initialization', async () => {
     const mockFriends = [
       { id: '1', name: 'Alice', lastContact: Date.now() },
       { id: '2', name: 'Bob', lastContact: Date.now() }
     ]
     localStorage.setItem('friends-radar-data', JSON.stringify(mockFriends))
 
-    // Need to reload the module to test initialization
-    // For now, just verify that existing friends are loaded
-    const { friends } = useFriends()
-    friends.value = mockFriends
+    const userIdRef = ref<string | undefined>(undefined)
+    const { friends } = useFriends(userIdRef)
     
     expect(friends.value).toHaveLength(2)
     expect(friends.value[0]?.name).toBe('Alice')
@@ -65,29 +57,27 @@ describe('useFriends', () => {
   })
 
   it('handles corrupted localStorage data gracefully', () => {
-    localStorage.clear()
     localStorage.setItem('friends-radar-data', 'invalid json{')
 
-    const { friends } = useFriends()
-    friends.value = []
+    const userIdRef = ref<string | undefined>(undefined)
+    const { friends } = useFriends(userIdRef)
     expect(friends.value).toEqual([])
   })
 
   it('handles non-array data in localStorage', () => {
-    localStorage.clear()
     localStorage.setItem('friends-radar-data', JSON.stringify({ not: 'array' }))
 
-    const { friends } = useFriends()
-    friends.value = []
+    const userIdRef = ref<string | undefined>(undefined)
+    const { friends } = useFriends(userIdRef)
     expect(friends.value).toEqual([])
   })
 
   describe('addFriend', () => {
-    it('adds a new friend with generated UUID', () => {
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+    it('adds a new friend with generated UUID', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend } = useFriends(userIdRef)
       
-      addFriend('Charlie')
+      await addFriend('Charlie')
       
       expect(friends.value).toHaveLength(1)
       expect(friends.value[0]?.name).toBe('Charlie')
@@ -96,61 +86,60 @@ describe('useFriends', () => {
       expect(friends.value[0]?.lastContact).toBeDefined()
     })
 
-    it('capitalizes first letter of friend name', () => {
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+    it('capitalizes first letter of friend name', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend } = useFriends(userIdRef)
       
-      addFriend('alice')
+      await addFriend('alice')
       
       expect(friends.value[0]?.name).toBe('Alice')
     })
 
-    it('converts rest of name to lowercase', () => {
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+    it('converts rest of name to lowercase', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend } = useFriends(userIdRef)
       
-      addFriend('DAVID')
+      await addFriend('DAVID')
       
       expect(friends.value[0]?.name).toBe('David')
     })
 
-    it('handles mixed case names correctly', () => {
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+    it('handles mixed case names correctly', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend } = useFriends(userIdRef)
       
-      addFriend('bOb')
-      addFriend('JoHn')
+      await addFriend('bOb')
+      await addFriend('JoHn')
       
       expect(friends.value[0]?.name).toBe('Bob')
       expect(friends.value[1]?.name).toBe('John')
     })
 
-    it('preserves already properly capitalized names', () => {
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+    it('preserves already properly capitalized names', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend } = useFriends(userIdRef)
       
-      addFriend('Sarah')
+      await addFriend('Sarah')
       
       expect(friends.value[0]?.name).toBe('Sarah')
     })
 
-    it('sets lastContact to current time', () => {
+    it('sets lastContact to current time', async () => {
       const now = Date.now()
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend } = useFriends(userIdRef)
       
-      addFriend('David')
+      await addFriend('David')
       
       expect(friends.value[0]?.lastContact).toBeGreaterThanOrEqual(now - 10)
       expect(friends.value[0]?.lastContact).toBeLessThanOrEqual(Date.now())
     })
 
     it('saves to localStorage after adding', async () => {
-      localStorage.clear()
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+      const userIdRef = ref<string | undefined>(undefined)
+      const { addFriend } = useFriends(userIdRef)
       
-      addFriend('Eve')
+      await addFriend('Eve')
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -164,13 +153,13 @@ describe('useFriends', () => {
       }
     })
 
-    it('can add multiple friends', () => {
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+    it('can add multiple friends', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend } = useFriends(userIdRef)
       
-      addFriend('Alice')
-      addFriend('Bob')
-      addFriend('Charlie')
+      await addFriend('Alice')
+      await addFriend('Bob')
+      await addFriend('Charlie')
       
       expect(friends.value).toHaveLength(3)
       expect(friends.value.map(f => f.name)).toEqual(['Alice', 'Bob', 'Charlie'])
@@ -178,41 +167,40 @@ describe('useFriends', () => {
   })
 
   describe('removeFriend', () => {
-    it('removes a friend by id', () => {
-      const { friends, addFriend, removeFriend } = useFriends()
-      friends.value = []
+    it('removes a friend by id', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend, removeFriend } = useFriends(userIdRef)
       
-      addFriend('Alice')
+      await addFriend('Alice')
       const aliceId = friends.value[0]?.id ?? ''
-      addFriend('Bob')
+      await addFriend('Bob')
       
-      removeFriend(aliceId)
+      await removeFriend(aliceId)
       
       expect(friends.value).toHaveLength(1)
       expect(friends.value[0]?.name).toBe('Bob')
     })
 
-    it('does nothing if friend id does not exist', () => {
-      const { friends, addFriend, removeFriend } = useFriends()
-      friends.value = []
+    it('does nothing if friend id does not exist', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend, removeFriend } = useFriends(userIdRef)
       
-      addFriend('Alice')
-      removeFriend('non-existent-id')
+      await addFriend('Alice')
+      await removeFriend('non-existent-id')
       
       expect(friends.value).toHaveLength(1)
       expect(friends.value[0]?.name).toBe('Alice')
     })
 
     it('saves to localStorage after removing', async () => {
-      localStorage.clear()
-      const { friends, addFriend, removeFriend } = useFriends()
-      friends.value = []
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend, removeFriend } = useFriends(userIdRef)
       
-      addFriend('Alice')
-      addFriend('Bob')
+      await addFriend('Alice')
+      await addFriend('Bob')
       const aliceId = friends.value[0]?.id ?? ''
       
-      removeFriend(aliceId)
+      await removeFriend(aliceId)
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -227,11 +215,11 @@ describe('useFriends', () => {
   })
 
   describe('updateLastContact', () => {
-    it('updates lastContact timestamp for a friend', () => {
-      const { friends, addFriend, updateLastContact } = useFriends()
-      friends.value = []
+    it('updates lastContact timestamp for a friend', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend, updateLastContact } = useFriends(userIdRef)
       
-      addFriend('Alice')
+      await addFriend('Alice')
       const aliceId = friends.value[0]?.id ?? ''
       const originalTime = friends.value[0]?.lastContact ?? 0
       
@@ -239,37 +227,36 @@ describe('useFriends', () => {
       vi.useFakeTimers()
       vi.advanceTimersByTime(5000)
       
-      updateLastContact(aliceId)
+      await updateLastContact(aliceId)
       
       expect(friends.value[0]?.lastContact).toBeGreaterThan(originalTime)
       
       vi.useRealTimers()
     })
 
-    it('does nothing if friend id does not exist', () => {
-      const { friends, addFriend, updateLastContact } = useFriends()
-      friends.value = []
+    it('does nothing if friend id does not exist', async () => {
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend, updateLastContact } = useFriends(userIdRef)
       
-      addFriend('Alice')
+      await addFriend('Alice')
       const originalTime = friends.value[0]?.lastContact ?? 0
       
-      updateLastContact('non-existent-id')
+      await updateLastContact('non-existent-id')
       
       expect(friends.value[0]?.lastContact).toBe(originalTime)
     })
 
     it('saves to localStorage after updating', async () => {
-      localStorage.clear()
-      const { friends, addFriend, updateLastContact } = useFriends()
-      friends.value = []
+      const userIdRef = ref<string | undefined>(undefined)
+      const { friends, addFriend, updateLastContact } = useFriends(userIdRef)
       
-      addFriend('Alice')
+      await addFriend('Alice')
       const aliceId = friends.value[0]?.id ?? ''
       
       // Wait a bit before updating
       await new Promise(resolve => setTimeout(resolve, 10))
       
-      updateLastContact(aliceId)
+      await updateLastContact(aliceId)
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -284,18 +271,18 @@ describe('useFriends', () => {
 
   describe('persistence', () => {
     it('persists changes across multiple composable instances', async () => {
-      localStorage.clear()
-      const { friends, addFriend } = useFriends()
-      friends.value = []
+      const userIdRef1 = ref<string | undefined>(undefined)
+      const { addFriend } = useFriends(userIdRef1)
       
-      addFriend('Alice')
-      addFriend('Bob')
+      await addFriend('Alice')
+      await addFriend('Bob')
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))
       
       // Create new instance (simulating page refresh)
-      const { friends: newFriends } = useFriends()
+      const userIdRef2 = ref<string | undefined>(undefined)
+      const { friends: newFriends } = useFriends(userIdRef2)
       
       expect(newFriends.value).toHaveLength(2)
       expect(newFriends.value.map(f => f.name)).toEqual(['Alice', 'Bob'])
@@ -304,17 +291,15 @@ describe('useFriends', () => {
 
   describe('user-scoped data', () => {
     it('stores data in user-specific localStorage key when userId is provided', async () => {
-      localStorage.clear()
-      const userId = 'user123'
-      const { friends, addFriend } = useFriends(userId)
-      friends.value = []
+      const userIdRef = ref<string | undefined>('user123')
+      const { addFriend } = useFriends(userIdRef)
       
-      addFriend('Alice')
+      await addFriend('Alice')
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))
       
-      const stored = localStorage.getItem(`friends-radar-data-${userId}`)
+      const stored = localStorage.getItem('friends-radar-data-user123')
       expect(stored).toBeDefined()
       if (stored) {
         const parsed = JSON.parse(stored)
@@ -324,20 +309,18 @@ describe('useFriends', () => {
     })
 
     it('isolates data between different users', async () => {
-      localStorage.clear()
-      
       // User 1 adds Alice
-      const { friends: friends1, addFriend: addFriend1 } = useFriends('user1')
-      friends1.value = []
-      addFriend1('Alice')
+      const userIdRef1 = ref<string | undefined>('user1')
+      const { addFriend: addFriend1 } = useFriends(userIdRef1)
+      await addFriend1('Alice')
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))
       
       // User 2 adds Bob
-      const { friends: friends2, addFriend: addFriend2 } = useFriends('user2')
-      friends2.value = []
-      addFriend2('Bob')
+      const userIdRef2 = ref<string | undefined>('user2')
+      const { addFriend: addFriend2 } = useFriends(userIdRef2)
+      await addFriend2('Bob')
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -349,43 +332,95 @@ describe('useFriends', () => {
       expect(user1Data).toBeDefined()
       expect(user2Data).toBeDefined()
       
+      if (user1Data) {
+        const user1Friends = JSON.parse(user1Data)
+        expect(user1Friends).toHaveLength(1)
+        expect(user1Friends[0]?.name).toBe('Alice')
+      }
+      
       if (user2Data) {
         const user2Friends = JSON.parse(user2Data)
-        
         expect(user2Friends).toHaveLength(1)
         expect(user2Friends[0]?.name).toBe('Bob')
       }
     })
 
-    it('switches data when userId changes', () => {
+    it('CRITICAL: switches data when userId changes reactively', async () => {
       localStorage.clear()
       
-      // Set up data for two users
+      // Set up pre-existing data for two users
       localStorage.setItem('friends-radar-data-user1', JSON.stringify([
         { id: '1', name: 'Alice', lastContact: Date.now() }
       ]))
       localStorage.setItem('friends-radar-data-user2', JSON.stringify([
-        { id: '2', name: 'Bob', lastContact: Date.now() }
+        { id: '2', name: 'Bob', lastContact: Date.now() },
+        { id: '3', name: 'Charlie', lastContact: Date.now() }
       ]))
       
-      // Load user1's data
-      const { friends: friends1 } = useFriends('user1')
-      expect(friends1.value).toHaveLength(1)
-      expect(friends1.value[0]?.name).toBe('Alice')
+      // Create reactive userId ref
+      const userIdRef = ref<string | undefined>('user1')
+      const { friends } = useFriends(userIdRef)
       
-      // Switch to user2's data
-      const { friends: friends2 } = useFriends('user2')
-      expect(friends2.value).toHaveLength(1)
-      expect(friends2.value[0]?.name).toBe('Bob')
+      // Should load user1's data (Alice)
+      expect(friends.value).toHaveLength(1)
+      expect(friends.value[0]?.name).toBe('Alice')
+      
+      // Switch to user2
+      userIdRef.value = 'user2'
+      await nextTick()
+      await new Promise(resolve => setTimeout(resolve, 50))
+      
+      // Should now show user2's data (Bob, Charlie)
+      expect(friends.value).toHaveLength(2)
+      expect(friends.value[0]?.name).toBe('Bob')
+      expect(friends.value[1]?.name).toBe('Charlie')
+      
+      // Switch back to user1
+      userIdRef.value = 'user1'
+      await nextTick()
+      await new Promise(resolve => setTimeout(resolve, 50))
+      
+      // Should show user1's data again (Alice)
+      expect(friends.value).toHaveLength(1)
+      expect(friends.value[0]?.name).toBe('Alice')
+    })
+
+    it('CRITICAL: user A cannot see user B data', async () => {
+      localStorage.clear()
+      
+      // User A adds friends
+      const userARef = ref<string | undefined>('userA')
+      const { friends: friendsA, addFriend: addFriendA } = useFriends(userARef)
+      await addFriendA('Alice')
+      await addFriendA('Amy')
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      expect(friendsA.value).toHaveLength(2)
+      
+      // User B adds different friends
+      const userBRef = ref<string | undefined>('userB')
+      const { friends: friendsB, addFriend: addFriendB } = useFriends(userBRef)
+      await addFriendB('Bob')
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      // User B should only see Bob, not Alice/Amy
+      expect(friendsB.value).toHaveLength(1)
+      expect(friendsB.value[0]?.name).toBe('Bob')
+      expect(friendsB.value.some(f => f.name === 'Alice')).toBe(false)
+      expect(friendsB.value.some(f => f.name === 'Amy')).toBe(false)
+      
+      // User A should still see their own data
+      expect(friendsA.value).toHaveLength(2)
+      expect(friendsA.value.some(f => f.name === 'Alice')).toBe(true)
+      expect(friendsA.value.some(f => f.name === 'Amy')).toBe(true)
+      expect(friendsA.value.some(f => f.name === 'Bob')).toBe(false)
     })
 
     it('uses default storage key when no userId provided', async () => {
-      localStorage.clear()
-      // Create a completely fresh instance by not passing userId
-      const { friends: friends1, addFriend: addFriend1 } = useFriends()
-      friends1.value = [] // Reset any existing state
+      const userIdRef = ref<string | undefined>(undefined)
+      const { addFriend } = useFriends(userIdRef)
       
-      addFriend1('Alice')
+      await addFriend('Alice')
       
       // Wait for watch to trigger
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -398,6 +433,48 @@ describe('useFriends', () => {
         expect(parsed[0]?.name).toBe('Alice')
       }
     })
+
+    it('CRITICAL: adding friend to one user does not affect other user', async () => {
+      localStorage.clear()
+      
+      // User 1 adds Alice
+      const user1Ref = ref<string | undefined>('user1')
+      const { friends: friends1, addFriend: addFriend1 } = useFriends(user1Ref)
+      await addFriend1('Alice')
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      // User 2 starts with empty list
+      const user2Ref = ref<string | undefined>('user2')
+      const { friends: friends2, addFriend: addFriend2 } = useFriends(user2Ref)
+      
+      expect(friends2.value).toHaveLength(0)
+      
+      // User 2 adds Bob
+      await addFriend2('Bob')
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      // User 1 should still only have Alice
+      expect(friends1.value).toHaveLength(1)
+      expect(friends1.value[0]?.name).toBe('Alice')
+      
+      // User 2 should only have Bob
+      expect(friends2.value).toHaveLength(1)
+      expect(friends2.value[0]?.name).toBe('Bob')
+      
+      // Verify localStorage isolation
+      const user1Storage = localStorage.getItem('friends-radar-data-user1')
+      const user2Storage = localStorage.getItem('friends-radar-data-user2')
+      
+      if (user1Storage && user2Storage) {
+        const user1Data = JSON.parse(user1Storage)
+        const user2Data = JSON.parse(user2Storage)
+        
+        expect(user1Data).toHaveLength(1)
+        expect(user1Data[0]?.name).toBe('Alice')
+        
+        expect(user2Data).toHaveLength(1)
+        expect(user2Data[0]?.name).toBe('Bob')
+      }
+    })
   })
 })
-

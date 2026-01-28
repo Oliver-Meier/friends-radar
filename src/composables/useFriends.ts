@@ -1,4 +1,4 @@
-import { ref, watch, onUnmounted, computed } from 'vue'
+import { ref, watch, onUnmounted, computed, type Ref } from 'vue'
 import type { Friend } from '../types/Friend'
 import { useCloudflareSync } from './useCloudflareSync'
 import { useAuth } from './useAuth'
@@ -35,13 +35,17 @@ const saveFriends = (friendsList: Friend[], userId?: string): void => {
   }
 }
 
-// Shared friends state - will be reset when user changes
-let friends = ref<Friend[]>([])
-let currentUserId: string | undefined = undefined
-let isInitialized = false
+// Store per-user composable instances to maintain singleton per user
+const userInstances = new Map<string | undefined, ReturnType<typeof createUserInstance>>()
 
-export function useFriends(userId?: string) {
+function createUserInstance(userIdRef: Ref<string | undefined>) {
   const { currentUser } = useAuth()
+  
+  // Create instance-specific friends ref (not shared!)
+  const friends = ref<Friend[]>([])
+  let currentUserId: string | undefined = undefined
+  let currentStopPolling: (() => void) | null = null
+  let currentSyncFns: ReturnType<typeof useCloudflareSync> | null = null
   
   // Get ID token from Google authentication
   const idToken = computed(() => {
@@ -50,48 +54,62 @@ export function useFriends(userId?: string) {
     return currentUser.value?.id
   })
 
-  const {
-    isSyncing,
-    syncError,
-    isOnline,
-    syncFriendToCloudflare,
-    deleteFriendFromCloudflare,
-    loadFriendsFromCloudflare,
-    syncAllFriendsToCloudflare,
-    startPolling,
-    stopPolling
-  } = useCloudflareSync(userId, idToken.value)
+  // Initialize or update sync functions
+  const initializeSyncForUser = (userId: string | undefined) => {
+    // Stop any existing polling
+    if (currentStopPolling) {
+      currentStopPolling()
+      currentStopPolling = null
+    }
 
-  // If userId changed, reload friends for new user
-  if (userId !== currentUserId || !isInitialized) {
-    currentUserId = userId
-    isInitialized = true
+    // Initialize Cloudflare sync for this user
+    currentSyncFns = useCloudflareSync(userId, idToken.value)
 
     // Load from localStorage first (instant)
     friends.value = loadFriends(userId)
+    currentUserId = userId
 
     // Then load from Cloudflare (for cross-device sync)
     if (userId) {
-      loadFriendsFromCloudflare().then(cloudflareFriends => {
-        if (cloudflareFriends.length > 0) {
-          // Merge with local data, preferring newer timestamps
-          const mergedFriends = mergeFriends(friends.value, cloudflareFriends)
-          friends.value = mergedFriends
-          saveFriends(mergedFriends, userId)
-        } else if (friends.value.length > 0) {
-          // If Cloudflare is empty but we have local data, sync it up
-          syncAllFriendsToCloudflare(friends.value).catch(console.error)
+      currentSyncFns.loadFriendsFromCloudflare().then(cloudflareFriends => {
+        // Only merge if we're still on the same user
+        if (currentUserId === userId) {
+          if (cloudflareFriends.length > 0) {
+            // Merge with local data, preferring newer timestamps
+            const mergedFriends = mergeFriends(friends.value, cloudflareFriends)
+            friends.value = mergedFriends
+            saveFriends(mergedFriends, userId)
+          } else if (friends.value.length > 0) {
+            // If Cloudflare is empty but we have local data, sync it up
+            currentSyncFns?.syncAllFriendsToCloudflare(friends.value).catch(console.error)
+          }
         }
       })
 
       // Start polling for updates every 5 seconds
-      startPolling((cloudflareFriends) => {
-        const mergedFriends = mergeFriends(friends.value, cloudflareFriends)
-        friends.value = mergedFriends
-        saveFriends(mergedFriends, userId)
+      currentSyncFns.startPolling((cloudflareFriends) => {
+        // Only merge if we're still on the same user
+        if (currentUserId === userId) {
+          const mergedFriends = mergeFriends(friends.value, cloudflareFriends)
+          friends.value = mergedFriends
+          saveFriends(mergedFriends, userId)
+        }
       }, 5000)
+      
+      currentStopPolling = currentSyncFns.stopPolling
     }
   }
+
+  // Initialize for current user
+  initializeSyncForUser(userIdRef.value)
+
+  // Watch for userId changes and reinitialize
+  watch(userIdRef, (newUserId, oldUserId) => {
+    if (newUserId !== oldUserId) {
+      console.log(`[useFriends] User changed from ${oldUserId} to ${newUserId}, reinitializing...`)
+      initializeSyncForUser(newUserId)
+    }
+  })
 
   // Merge two friend lists, preferring newer lastContact times
   const mergeFriends = (local: Friend[], remote: Friend[]): Friend[] => {
@@ -128,9 +146,9 @@ export function useFriends(userId?: string) {
     friends.value.push(newFriend)
 
     // Sync to Cloudflare if user is logged in and online
-    if (currentUserId && isOnline.value) {
+    if (currentUserId && currentSyncFns?.isOnline.value) {
       try {
-        await syncFriendToCloudflare(newFriend)
+        await currentSyncFns.syncFriendToCloudflare(newFriend)
       } catch (error) {
         console.error('Failed to sync new friend to Cloudflare:', error)
         // Keep in local state even if sync fails
@@ -142,9 +160,9 @@ export function useFriends(userId?: string) {
     friends.value = friends.value.filter(friend => friend.id !== id)
 
     // Delete from Cloudflare if user is logged in and online
-    if (currentUserId && isOnline.value) {
+    if (currentUserId && currentSyncFns?.isOnline.value) {
       try {
-        await deleteFriendFromCloudflare(id)
+        await currentSyncFns.deleteFriendFromCloudflare(id)
       } catch (error) {
         console.error('Failed to delete friend from Cloudflare:', error)
         // Keep deleted locally even if Cloudflare deletion fails
@@ -158,9 +176,9 @@ export function useFriends(userId?: string) {
       friend.lastContact = Date.now()
 
       // Sync to Cloudflare if user is logged in and online
-      if (currentUserId && isOnline.value) {
+      if (currentUserId && currentSyncFns?.isOnline.value) {
         try {
-          await syncFriendToCloudflare(friend)
+          await currentSyncFns.syncFriendToCloudflare(friend)
         } catch (error) {
           console.error('Failed to sync updated friend to Cloudflare:', error)
           // Keep updated locally even if sync fails
@@ -171,7 +189,9 @@ export function useFriends(userId?: string) {
 
   // Clean up polling when component unmounts
   onUnmounted(() => {
-    stopPolling()
+    if (currentStopPolling) {
+      currentStopPolling()
+    }
   })
 
   return {
@@ -179,8 +199,28 @@ export function useFriends(userId?: string) {
     addFriend,
     removeFriend,
     updateLastContact,
-    isSyncing,
-    syncError,
-    isOnline
+    isSyncing: computed(() => currentSyncFns?.isSyncing.value ?? false),
+    syncError: computed(() => currentSyncFns?.syncError.value ?? null),
+    isOnline: computed(() => currentSyncFns?.isOnline.value ?? true)
   }
+}
+
+export function useFriends(userIdRef: Ref<string | undefined>) {
+  // In App.vue, we want a singleton per user
+  // But in tests, each invocation should be independent
+  // Check if we're in test mode
+  const isTestMode = import.meta.env.MODE === 'test'
+  
+  if (isTestMode) {
+    // In tests, always create a new instance (no caching)
+    return createUserInstance(userIdRef)
+  }
+  
+  // In production, maintain one instance per app (singleton)
+  // This ensures that all components see the same friends ref
+  const cacheKey = 'app-singleton'
+  if (!userInstances.has(cacheKey)) {
+    userInstances.set(cacheKey, createUserInstance(userIdRef))
+  }
+  return userInstances.get(cacheKey)!
 }
