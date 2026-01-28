@@ -123,4 +123,31 @@
 - US-005: FriendsGrid component
 
 ---
+
+## Iteration 5 - 2026-01-28
+- Story: US-005 - Create FriendsGrid component
+- Status: Completed
+- Changes:
+  - Created FriendsGrid.vue component in src/components/
+  - Accepts friends prop (Friend array) with TypeScript types
+  - Uses CSS Grid: 4 columns on desktop, 2 columns on mobile
+  - Renders FriendTile for each friend with proper key binding
+  - Forwards contact events from child FriendTile components
+  - Shows empty state message when friends array is empty
+  - Refactored App.vue to use FriendsGrid instead of inline grid
+  - Removed duplicate grid CSS from App.vue
+  - Fixed TypeScript error with array access safety check
+  - npm run build passes successfully
+
+### Learnings
+- Component composition: FriendsGrid contains FriendTiles
+- Event forwarding pattern: child emits → parent emits → grandparent handles
+- :deep() selector in Vue scoped CSS for styling nested components
+- v-if/v-else for conditional rendering (empty state vs grid)
+- TypeScript array access safety: check undefined before using index
+
+### Next Up
+- US-006: AddFriendForm component
+
+---
 (Future iterations will append their learnings here)
