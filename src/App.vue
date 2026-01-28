@@ -4,7 +4,7 @@ import FriendsGrid from './components/FriendsGrid.vue'
 import AddFriendForm from './components/AddFriendForm.vue'
 import { useFriends } from './composables/useFriends'
 
-const { friends, addFriend, updateLastContact } = useFriends()
+const { friends, addFriend, updateLastContact, removeFriend } = useFriends()
 
 // Initialize demo friends if none exist
 onMounted(() => {
@@ -71,6 +71,11 @@ const handleAddFriend = (name: string) => {
   console.log('Added friend:', name)
 }
 
+const handleDeleteFriend = (id: string) => {
+  removeFriend(id)
+  console.log('Deleted friend:', id)
+}
+
 const resetDemo = () => {
   localStorage.clear()
   location.reload()
@@ -86,7 +91,7 @@ const resetDemo = () => {
     
     <AddFriendForm @add="handleAddFriend" />
     
-    <FriendsGrid :friends="friends" @contact="handleContact" />
+    <FriendsGrid :friends="friends" @contact="handleContact" @delete="handleDeleteFriend" />
 
     <div class="legend">
       <div class="legend-item">

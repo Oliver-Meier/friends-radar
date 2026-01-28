@@ -8,10 +8,15 @@ defineProps<{
 
 const emit = defineEmits<{
   contact: [id: string]
+  delete: [id: string]
 }>()
 
 const handleContact = (id: string) => {
   emit('contact', id)
+}
+
+const handleDelete = (id: string) => {
+  emit('delete', id)
 }
 </script>
 
@@ -27,6 +32,7 @@ const handleContact = (id: string) => {
         :key="friend.id"
         :friend="friend"
         @contact="handleContact"
+        @delete="handleDelete"
       />
     </div>
   </div>

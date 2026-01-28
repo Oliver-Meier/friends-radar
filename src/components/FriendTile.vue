@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   contact: [id: string]
+  delete: [id: string]
 }>()
 
 const indicatorColor = computed(() => getContactColor(props.friend.lastContact))
@@ -16,10 +17,23 @@ const indicatorColor = computed(() => getContactColor(props.friend.lastContact))
 const handleClick = () => {
   emit('contact', props.friend.id)
 }
+
+const handleDelete = (event: Event) => {
+  event.stopPropagation() // Prevent triggering contact event
+  emit('delete', props.friend.id)
+}
 </script>
 
 <template>
   <div class="friend-tile" @click="handleClick">
+    <button 
+      class="delete-btn" 
+      @click="handleDelete"
+      aria-label="Delete friend"
+      title="Delete friend"
+    >
+      ×
+    </button>
     <div class="indicator" :class="indicatorColor"></div>
     <div class="name">{{ friend.name }}</div>
   </div>
@@ -38,6 +52,7 @@ const handleClick = () => {
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
   outline: none;
+  position: relative;
 }
 
 .friend-tile:hover {
@@ -45,6 +60,42 @@ const handleClick = () => {
 }
 
 .friend-tile:active {
+  transform: scale(0.95);
+}
+
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(244, 67, 54, 0.9);
+  color: white;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  padding: 0;
+}
+
+.friend-tile:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  background: #f44336;
+  transform: scale(1.1);
+}
+
+.delete-btn:active {
   transform: scale(0.95);
 }
 
