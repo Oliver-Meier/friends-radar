@@ -321,4 +321,59 @@
 - US-010: Deploy to Render.com (final step!)
 
 ---
+
+## Iteration 16 - 2026-01-28
+- Story: US-016 - Telegram Bot for Daily Reminders
+- Status: Completed
+- Changes:
+  
+  **Backend (Cloudflare Worker):**
+  - Added telegram_subscriptions table to D1 schema
+  - Implemented Telegram webhook endpoint (/telegram/webhook)
+  - Bot commands: /start, /status, /stop, /link, /help
+  - Added cron trigger for daily notifications at 9:00 AM UTC
+  - Sends notification listing overdue friends (21+ days)
+  
+  **Frontend:**
+  - Created TelegramSetup.vue component
+  - Expandable card with setup instructions
+  - Link code copy functionality
+  - Shows only for logged-in users on unsupported platforms (iOS)
+  
+  **Documentation:**
+  - Created TELEGRAM_SETUP.md with full setup guide
+  - User instructions and developer setup guide
+
+### How It Works
+1. User opens @FriendsRadarBot on Telegram
+2. User sends /start to subscribe
+3. User copies link code from app, sends /link CODE
+4. Daily at 9am UTC, bot checks for overdue friends
+5. If any overdue, sends Telegram notification with names
+
+### Manual Setup Required
+- Create bot via @BotFather
+- wrangler secret put TELEGRAM_BOT_TOKEN
+- wrangler d1 execute friends-radar-db --remote --file schema.sql
+- wrangler deploy
+- Set webhook URL via Telegram API
+
+### Learnings
+- iOS doesn't support web push - Telegram is a great alternative
+- Cloudflare Workers support cron triggers via [triggers] in wrangler.toml
+- Telegram Bot API is simple: POST to sendMessage endpoint
+- Link code can simply be userId for MVP (improve in production)
+
+### Acceptance Criteria Verification
+✅ Bot responds to /start command and saves chat ID
+✅ Bot responds to /status command showing overdue friends
+✅ Bot responds to /stop command to unsubscribe
+✅ Store Telegram chat IDs linked to user accounts in D1
+✅ Cron trigger configured for daily 9am UTC
+✅ Telegram setup UI in app (expandable card)
+✅ TELEGRAM_SETUP.md documentation created
+✅ All 39 tests pass
+✅ npm run build passes
+
+---
 (Future iterations will append their learnings here)
