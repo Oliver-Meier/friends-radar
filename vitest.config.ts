@@ -17,6 +17,11 @@ export default defineConfig({
         '**/*.spec.ts',
         '**/*.test.ts'
       ]
+    },
+    server: {
+      deps: {
+        inline: ['@vue']
+      }
     }
   },
   resolve: {
