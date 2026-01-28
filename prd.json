@@ -273,6 +273,28 @@
       "priority": 15,
       "passes": true,
       "tested": true
+    },
+    {
+      "id": "US-016",
+      "title": "Telegram Bot for Daily Reminders",
+      "description": "Create a Telegram bot that sends daily push notifications about overdue friends, as an alternative to web push (which doesn't work on iOS)",
+      "acceptanceCriteria": [
+        "Create Telegram bot via BotFather (@FriendsRadarBot)",
+        "Bot responds to /start command and saves user's chat ID",
+        "Bot responds to /status command showing current overdue friends",
+        "Bot responds to /stop command to unsubscribe from notifications",
+        "Store Telegram chat IDs linked to user accounts in D1 database",
+        "Create scheduled Cloudflare Worker (cron) that runs daily at 9am",
+        "Cron job fetches overdue friends for each subscribed user",
+        "Send Telegram message listing overdue friends (if any)",
+        "Add Telegram setup UI in Friends Radar app (link to bot, instructions)",
+        "Document setup process in TELEGRAM_SETUP.md",
+        "All tests pass (npm run test)",
+        "npm run build passes"
+      ],
+      "priority": 16,
+      "passes": true,
+      "tested": true
     }
   ]
 }

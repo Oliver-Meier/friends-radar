@@ -7,3 +7,11 @@ compatibility_date = "2024-01-01"
 binding = "DB"
 database_name = "friends-radar-db"
 database_id = "a18f8c01-6827-43f5-ad69-c4053042e9ef"
+
+# Cron trigger for daily Telegram notifications
+# Runs at 9:00 AM UTC every day
+[triggers]
+crons = ["0 9 * * *"]
+
+# Environment variables (set via wrangler secret put)
+# TELEGRAM_BOT_TOKEN - Get from @BotFather on Telegram

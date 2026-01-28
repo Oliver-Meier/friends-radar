@@ -4,6 +4,7 @@ import FriendsGrid from './components/FriendsGrid.vue'
 import AddFriendForm from './components/AddFriendForm.vue'
 import LoginScreen from './components/LoginScreen.vue'
 import UserProfile from './components/UserProfile.vue'
+import TelegramSetup from './components/TelegramSetup.vue'
 import { useFriends } from './composables/useFriends'
 import { useNotifications } from './composables/useNotifications'
 import { useAuth } from './composables/useAuth'
@@ -91,6 +92,9 @@ const handleContinueAsGuest = () => {
         {{ overdueFriends.length > 1 ? 'are' : 'is' }} waiting to hear from you!
       </p>
     </div>
+    
+    <!-- Telegram setup for mobile push notifications (only for logged-in users) -->
+    <TelegramSetup v-if="currentUser && !isNotificationSupported" />
     
     <AddFriendForm @add="handleAddFriend" />
     
