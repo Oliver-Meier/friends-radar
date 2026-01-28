@@ -70,11 +70,15 @@ const handleContact = (id: string) => {
 h1 {
   color: #333;
   margin-bottom: 8px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .subtitle {
   color: #666;
   margin-bottom: 40px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .demo-grid {
