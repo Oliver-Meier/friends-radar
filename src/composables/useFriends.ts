@@ -1,7 +1,37 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { Friend } from '../types/Friend'
 
-const friends = ref<Friend[]>([])
+const STORAGE_KEY = 'friends-radar-data'
+
+// Load friends from localStorage on init
+const loadFriends = (): Friend[] => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      return Array.isArray(parsed) ? parsed : []
+    }
+  } catch (error) {
+    console.warn('Failed to load friends from localStorage:', error)
+  }
+  return []
+}
+
+// Save friends to localStorage
+const saveFriends = (friendsList: Friend[]): void => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(friendsList))
+  } catch (error) {
+    console.warn('Failed to save friends to localStorage:', error)
+  }
+}
+
+const friends = ref<Friend[]>(loadFriends())
+
+// Watch for changes and save to localStorage
+watch(friends, (newFriends) => {
+  saveFriends(newFriends)
+}, { deep: true })
 
 export function useFriends() {
   const addFriend = (name: string): void => {
