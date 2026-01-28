@@ -150,4 +150,38 @@
 - US-006: AddFriendForm component
 
 ---
+
+## Iteration 6 - 2026-01-28
+- Story: US-006 - Create AddFriendForm component
+- Status: Completed
+- Changes:
+  - Created AddFriendForm.vue component in src/components/
+  - Text input with placeholder "Enter friend's name"
+  - Add Friend button that submits the form
+  - Form validation: button disabled when name is empty
+  - Trims whitespace before submission
+  - Emits 'add' event with friend name (string)
+  - Clears input field after successful submission
+  - Supports Enter key submission via @submit.prevent
+  - Max length 50 characters for friend names
+  - Responsive: stacks vertically on mobile (<768px)
+  - Integrated into App.vue with handleAddFriend handler
+  - Green color scheme matching app theme
+  - Smooth hover/focus states with transitions
+  - npm run build passes successfully
+
+### Learnings
+- Form handling in Vue: @submit.prevent for custom submit logic
+- v-model two-way binding for input fields
+- Computed disabled state based on trimmed value
+- :disabled attribute binding for button states
+- CSS flex layout with gap for form elements
+- Mobile-first responsive: flex-direction: column on small screens
+- Input focus states with border-color transitions
+- Disabled button styling (opacity, cursor: not-allowed)
+
+### Next Up
+- US-007: Full App.vue integration (wire everything together)
+
+---
 (Future iterations will append their learnings here)
