@@ -254,6 +254,25 @@
       "priority": 14,
       "passes": true,
       "tested": true
+    },
+    {
+      "id": "US-015",
+      "title": "Fix PWA notifications for Safari/iOS",
+      "description": "Handle Safari/iOS notification limitations and provide graceful fallback",
+      "acceptanceCriteria": [
+        "Detect Safari/iOS browsers",
+        "Show platform-specific notification guidance",
+        "Hide notification banner on unsupported platforms",
+        "Add visual indicator in app when friends are overdue (alternative to notifications)",
+        "Document Safari/iOS limitations in UI",
+        "Test on Safari macOS",
+        "Test on iOS Safari",
+        "All tests pass (npm run test)",
+        "npm run build passes"
+      ],
+      "priority": 15,
+      "passes": true,
+      "tested": true
     }
   ]
 }

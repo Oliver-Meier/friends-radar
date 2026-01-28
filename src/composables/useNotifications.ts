@@ -1,4 +1,4 @@
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import type { Friend } from '../types/Friend'
 
 const NOTIFICATION_CHECK_INTERVAL = 60000 // Check every minute
@@ -7,10 +7,44 @@ const OVERDUE_THRESHOLD = 21 * 1000 // 21 seconds for testing (will be 21 days i
 const notificationPermission = ref<NotificationPermission>('default')
 const notificationsEnabled = ref(false)
 
+// Detect Safari/iOS
+const isSafari = () => {
+  const ua = navigator.userAgent.toLowerCase()
+  return ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1
+}
+
+const isIOS = () => {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+}
+
+const isNotificationSupported = computed(() => {
+  // Safari on iOS doesn't support Web Notifications API at all
+  if (isIOS()) {
+    return false
+  }
+  
+  // Safari on macOS has limited support
+  // Web Push API is not available in PWA mode
+  if (isSafari() && !window.Notification) {
+    return false
+  }
+  
+  return 'Notification' in window
+})
+
 export function useNotifications(friends: any) {
+  const overdueFriends = computed(() => {
+    const now = Date.now()
+    return friends.value.filter((friend: Friend) => {
+      const timeSinceContact = now - friend.lastContact
+      return timeSinceContact > OVERDUE_THRESHOLD
+    })
+  })
+
   const requestPermission = async () => {
-    if (!('Notification' in window)) {
-      console.warn('This browser does not support notifications')
+    if (!isNotificationSupported.value) {
+      console.warn('Notifications are not supported on this platform')
       return false
     }
 
@@ -36,20 +70,14 @@ export function useNotifications(friends: any) {
   }
 
   const checkOverdueFriends = () => {
-    if (!notificationsEnabled.value || !('Notification' in window)) {
+    if (!notificationsEnabled.value || !isNotificationSupported.value) {
       return
     }
 
-    const now = Date.now()
-    const overdueFriends: Friend[] = friends.value.filter((friend: Friend) => {
-      const timeSinceContact = now - friend.lastContact
-      return timeSinceContact > OVERDUE_THRESHOLD
-    })
-
-    if (overdueFriends.length > 0) {
+    if (overdueFriends.value.length > 0) {
       // Group notification for multiple overdue friends
-      if (overdueFriends.length === 1) {
-        const friend = overdueFriends[0]
+      if (overdueFriends.value.length === 1) {
+        const friend = overdueFriends.value[0]
         if (friend) {
           new Notification('Time to reach out!', {
             body: `You haven't contacted ${friend.name} in a while.`,
@@ -60,7 +88,7 @@ export function useNotifications(friends: any) {
         }
       } else {
         new Notification('Time to reach out!', {
-          body: `${overdueFriends.length} friends are waiting to hear from you.`,
+          body: `${overdueFriends.value.length} friends are waiting to hear from you.`,
           icon: '/pwa-192x192.png',
           tag: 'overdue-multiple',
           badge: '/pwa-192x192.png'
@@ -71,7 +99,7 @@ export function useNotifications(friends: any) {
 
   onMounted(() => {
     // Check current permission status
-    if ('Notification' in window) {
+    if (isNotificationSupported.value) {
       notificationPermission.value = Notification.permission
       notificationsEnabled.value = Notification.permission === 'granted'
     }
@@ -96,6 +124,10 @@ export function useNotifications(friends: any) {
     notificationPermission,
     notificationsEnabled,
     requestPermission,
-    checkOverdueFriends
+    checkOverdueFriends,
+    isNotificationSupported,
+    overdueFriends,
+    isSafari: isSafari(),
+    isIOS: isIOS()
   }
 }

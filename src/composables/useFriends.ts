@@ -1,12 +1,18 @@
 import { ref, watch } from 'vue'
 import type { Friend } from '../types/Friend'
 
-const STORAGE_KEY = 'friends-radar-data'
+const BASE_STORAGE_KEY = 'friends-radar-data'
+
+// Get storage key for specific user
+const getStorageKey = (userId?: string): string => {
+  return userId ? `${BASE_STORAGE_KEY}-${userId}` : BASE_STORAGE_KEY
+}
 
 // Load friends from localStorage on init
-const loadFriends = (): Friend[] => {
+const loadFriends = (userId?: string): Friend[] => {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY)
+    const storageKey = getStorageKey(userId)
+    const stored = localStorage.getItem(storageKey)
     if (stored) {
       const parsed = JSON.parse(stored)
       return Array.isArray(parsed) ? parsed : []
@@ -18,22 +24,31 @@ const loadFriends = (): Friend[] => {
 }
 
 // Save friends to localStorage
-const saveFriends = (friendsList: Friend[]): void => {
+const saveFriends = (friendsList: Friend[], userId?: string): void => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(friendsList))
+    const storageKey = getStorageKey(userId)
+    localStorage.setItem(storageKey, JSON.stringify(friendsList))
   } catch (error) {
     console.warn('Failed to save friends to localStorage:', error)
   }
 }
 
-const friends = ref<Friend[]>(loadFriends())
+// Shared friends state - will be reset when user changes
+let friends = ref<Friend[]>([])
+let currentUserId: string | undefined = undefined
 
-// Watch for changes and save to localStorage
-watch(friends, (newFriends) => {
-  saveFriends(newFriends)
-}, { deep: true })
+export function useFriends(userId?: string) {
+  // If userId changed, reload friends for new user
+  if (userId !== currentUserId) {
+    currentUserId = userId
+    friends.value = loadFriends(userId)
+  }
 
-export function useFriends() {
+  // Watch for changes and save to localStorage
+  watch(friends, (newFriends) => {
+    saveFriends(newFriends, currentUserId)
+  }, { deep: true })
+
   const addFriend = (name: string): void => {
     // Capitalize first letter, keep rest as entered
     const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
