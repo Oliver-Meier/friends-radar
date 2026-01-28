@@ -184,4 +184,35 @@
 - US-007: Full App.vue integration (wire everything together)
 
 ---
+
+## Iteration 8 - 2026-01-28
+- Story: US-008 - Add delete friend functionality
+- Status: Completed
+- Changes:
+  - Added delete button (×) to FriendTile component
+  - Button positioned in top-right corner (absolute positioning)
+  - Red circular button (28px) with × symbol
+  - Button hidden by default, appears on tile hover (opacity: 0 → 1)
+  - Click handler stops event propagation to prevent contact trigger
+  - Emits 'delete' event with friend ID
+  - FriendsGrid forwards delete event through event chain
+  - App.vue handles delete with handleDeleteFriend → removeFriend
+  - Smooth transitions and hover effects (scale, color)
+  - Button has its own hover state (scale 1.1, darker red)
+  - npm run build passes successfully
+
+### Learnings
+- event.stopPropagation() prevents event bubbling to parent handlers
+- CSS positioning: position: relative on parent, absolute on child
+- Opacity transitions for smooth show/hide effects
+- Nested hover states: .parent:hover .child pattern
+- Accessibility: aria-label and title for icon-only buttons
+- Event forwarding chain: FriendTile → FriendsGrid → App
+- No confirmation dialog added (as per "optional" in acceptance criteria)
+
+### Next Up
+- US-009: Polish styling and UX (final polish)
+- US-010: Deploy to Render.com (deployment ready)
+
+---
 (Future iterations will append their learnings here)
