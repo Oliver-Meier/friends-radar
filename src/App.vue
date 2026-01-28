@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import FriendTile from './components/FriendTile.vue'
+import FriendsGrid from './components/FriendsGrid.vue'
 import { useFriends } from './composables/useFriends'
 
 const { friends, addFriend, updateLastContact } = useFriends()
@@ -53,7 +53,9 @@ onMounted(() => {
     ]
     
     friends.value.forEach((friend, index) => {
-      friend.lastContact = now - (timings[index] * 1000)
+      if (timings[index] !== undefined) {
+        friend.lastContact = now - (timings[index] * 1000)
+      }
     })
   }
 })
@@ -69,14 +71,7 @@ const handleContact = (id: string) => {
     <h1>Friends Radar - Demo</h1>
     <p class="subtitle">Click on a friend to record contact</p>
     
-    <div class="demo-grid">
-      <FriendTile 
-        v-for="friend in friends" 
-        :key="friend.id"
-        :friend="friend"
-        @contact="handleContact"
-      />
-    </div>
+    <FriendsGrid :friends="friends" @contact="handleContact" />
 
     <div class="legend">
       <div class="legend-item">
@@ -117,17 +112,8 @@ h1 {
   -webkit-user-select: none;
 }
 
-.demo-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+:deep(.friends-grid-container) {
   margin-bottom: 40px;
-}
-
-@media (max-width: 768px) {
-  .demo-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 .legend {
