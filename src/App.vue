@@ -53,17 +53,20 @@ const handleDeleteFriend = (id: string) => {
 }
 
 h1 {
-  color: #333;
+  color: #1a1a1a;
   margin-bottom: 8px;
   user-select: none;
   -webkit-user-select: none;
+  font-size: 2.5rem;
+  font-weight: 700;
 }
 
 .subtitle {
-  color: #666;
+  color: #4a4a4a;
   margin-bottom: 40px;
   user-select: none;
   -webkit-user-select: none;
+  font-size: 1.1rem;
 }
 
 :deep(.friends-grid-container) {
@@ -85,6 +88,8 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #2a2a2a;
+  font-weight: 500;
 }
 
 .legend-color {

@@ -53,6 +53,7 @@ const handleDelete = (event: Event) => {
   -webkit-tap-highlight-color: transparent;
   outline: none;
   position: relative;
+  touch-action: manipulation;
 }
 
 .friend-tile:hover {
@@ -84,6 +85,13 @@ const handleDelete = (event: Event) => {
   user-select: none;
   -webkit-user-select: none;
   padding: 0;
+  touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+  .delete-btn {
+    opacity: 1;
+  }
 }
 
 .friend-tile:hover .delete-btn {
@@ -125,8 +133,8 @@ const handleDelete = (event: Event) => {
 
 .name {
   font-size: 16px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #1a1a1a;
   text-align: center;
   pointer-events: none;
 }
