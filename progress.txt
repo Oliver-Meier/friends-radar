@@ -215,4 +215,41 @@
 - US-010: Deploy to Render.com (deployment ready)
 
 ---
+
+## Iteration 7 - 2026-01-28
+- Story: US-007 - Integrate components in App.vue
+- Status: Completed
+- Changes:
+  - Finalized App.vue for production release
+  - Updated title from "Friends Radar - Demo" to "Friends Radar"
+  - Updated subtitle to "Never lose touch with the people who matter"
+  - Removed demo initialization code (25 test friends)
+  - Removed Reset Demo button and associated handler
+  - Removed console.log debug statements
+  - Cleaned up unused CSS (reset button styles)
+  - Simplified script section - only essential handlers remain
+  - npm run build passes successfully
+
+### Acceptance Criteria Verification
+✅ App.vue uses useFriends composable
+✅ Renders AddFriendForm at top (with proper event handling)
+✅ Renders FriendsGrid with friends list
+✅ AddFriendForm 'add' event → handleAddFriend → addFriend
+✅ FriendTile 'contact' event → handleContact → updateLastContact
+✅ FriendTile 'delete' event → handleDeleteFriend → removeFriend
+✅ App has proper title 'Friends Radar' (production ready)
+✅ npm run build passes
+
+### Learnings
+- Production readiness: Remove demo/test code before deployment
+- Clean component hierarchy: App → AddFriendForm + FriendsGrid → FriendTile
+- Event flow: FriendTile emits → FriendsGrid forwards → App handles
+- Composable pattern keeps state management centralized
+- localStorage integration is seamless and invisible to user
+
+### Next Up
+- US-009: Polish styling and UX (final aesthetic pass)
+- US-010: Deploy to Render.com (ready to deploy!)
+
+---
 (Future iterations will append their learnings here)
