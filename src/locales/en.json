@@ -1,0 +1,52 @@
+{
+  "app": {
+    "title": "Friends Radar",
+    "subtitle": "Never lose touch with the people who matter",
+    "signIn": "Sign In"
+  },
+  "guest": {
+    "banner": "Guest Mode - Data stored locally on this device only",
+    "continueAsGuest": "Continue as Guest",
+    "privacyNote": "Guest mode: Data stored locally on this device only",
+    "privacySignIn": "Sign in: Sync friends across all your devices"
+  },
+  "login": {
+    "title": "Friends Radar",
+    "subtitle": "Never lose touch with the people who matter",
+    "message": "Sign in to sync across devices",
+    "or": "or",
+    "oauthHelp": "OAuth Setup Help",
+    "showOAuth": "Show",
+    "hideOAuth": "Hide"
+  },
+  "notifications": {
+    "enablePrompt": "Enable notifications to get reminded when friends are due for contact",
+    "enableButton": "Enable Notifications",
+    "iosNote": "iOS Note: Safari on iOS doesn't support web notifications. Check the red indicators below to see friends who need contact!",
+    "safariNote": "Safari Note: Notifications have limited support in Safari. Use the visual indicators below to track friend status!",
+    "unsupported": "Notifications are not supported in your browser. Use the visual indicators below to track friend status!"
+  },
+  "overdue": {
+    "friends": "{count} friend(s) waiting to hear from you!",
+    "oneFriend": "1 friend waiting to hear from you!",
+    "manyFriends": "{count} friends waiting to hear from you!"
+  },
+  "legend": {
+    "green": "Green: 0-7 days",
+    "yellow": "Yellow: 7-21 days",
+    "red": "Red: 21+ days"
+  },
+  "addFriend": {
+    "placeholder": "Friend's name",
+    "button": "Add Friend"
+  },
+  "friend": {
+    "contact": "Contact",
+    "delete": "Delete",
+    "lastContact": "Last contact"
+  },
+  "userProfile": {
+    "signOut": "Sign Out",
+    "signOutConfirm": "Are you sure you want to sign out?"
+  }
+}

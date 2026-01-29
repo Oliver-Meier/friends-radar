@@ -1,0 +1,52 @@
+{
+  "app": {
+    "title": "Friends Radar",
+    "subtitle": "Behalte die Menschen im Blick, die dir wichtig sind",
+    "signIn": "Anmelden"
+  },
+  "guest": {
+    "banner": "Gastmodus - Daten nur auf diesem Gerät gespeichert",
+    "continueAsGuest": "Als Gast fortfahren",
+    "privacyNote": "Gastmodus: Daten nur auf diesem Gerät gespeichert",
+    "privacySignIn": "Anmelden: Freunde auf allen Geräten synchronisieren"
+  },
+  "login": {
+    "title": "Friends Radar",
+    "subtitle": "Behalte die Menschen im Blick, die dir wichtig sind",
+    "message": "Melde dich an, um geräteübergreifend zu synchronisieren",
+    "or": "oder",
+    "oauthHelp": "OAuth-Einrichtungs Hilfe",
+    "showOAuth": "Anzeigen",
+    "hideOAuth": "Ausblenden"
+  },
+  "notifications": {
+    "enablePrompt": "Aktiviere Benachrichtigungen, um an Kontakt mit Freunden erinnert zu werden",
+    "enableButton": "Benachrichtigungen aktivieren",
+    "iosNote": "iOS-Hinweis: Safari unter iOS unterstützt keine Web-Benachrichtigungen. Nutze die farbigen Indikatoren unten für den Freundesstatus!",
+    "safariNote": "Safari-Hinweis: Benachrichtigungen sind in Safari eingeschränkt. Nutze die farbigen Indikatoren unten!",
+    "unsupported": "Benachrichtigungen werden von deinem Browser nicht unterstützt. Nutze die farbigen Indikatoren unten!"
+  },
+  "overdue": {
+    "friends": "{count} Freund(e) warten auf Nachricht von dir!",
+    "oneFriend": "1 Freund wartet auf Nachricht von dir!",
+    "manyFriends": "{count} Freunde warten auf Nachricht von dir!"
+  },
+  "legend": {
+    "green": "Grün: 0-7 Tage",
+    "yellow": "Gelb: 7-21 Tage",
+    "red": "Rot: 21+ Tage"
+  },
+  "addFriend": {
+    "placeholder": "Name des Freundes",
+    "button": "Freund hinzufügen"
+  },
+  "friend": {
+    "contact": "Kontakt",
+    "delete": "Löschen",
+    "lastContact": "Letzter Kontakt"
+  },
+  "userProfile": {
+    "signOut": "Abmelden",
+    "signOutConfirm": "Möchtest du dich wirklich abmelden?"
+  }
+}
