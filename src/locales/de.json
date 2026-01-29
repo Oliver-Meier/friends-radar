@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Friends Radar",
+    "title": "Freundschaftsradar",
     "subtitle": "Behalte die Menschen im Blick, die dir wichtig sind",
     "signIn": "Anmelden"
   },
@@ -11,7 +11,7 @@
     "privacySignIn": "Anmelden: Freunde auf allen Geräten synchronisieren"
   },
   "login": {
-    "title": "Friends Radar",
+    "title": "Freundschaftsradar",
     "subtitle": "Behalte die Menschen im Blick, die dir wichtig sind",
     "message": "Melde dich an, um geräteübergreifend zu synchronisieren",
     "or": "oder",
