@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   isSyncing: boolean
@@ -8,10 +11,10 @@ const props = defineProps<{
 }>()
 
 const statusText = computed(() => {
-  if (!props.isOnline) return 'Offline'
-  if (props.syncError) return 'Sync error'
-  if (props.isSyncing) return 'Syncing...'
-  return 'Synced'
+  if (!props.isOnline) return t('sync.offline')
+  if (props.syncError) return t('sync.error')
+  if (props.isSyncing) return t('sync.syncing')
+  return t('sync.synced')
 })
 
 const statusClass = computed(() => {

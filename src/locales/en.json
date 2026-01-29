@@ -48,5 +48,11 @@
   "userProfile": {
     "signOut": "Sign Out",
     "signOutConfirm": "Are you sure you want to sign out?"
+  },
+  "sync": {
+    "synced": "Synced",
+    "syncing": "Syncing...",
+    "offline": "Offline",
+    "error": "Sync error"
   }
 }
