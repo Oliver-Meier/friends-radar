@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
 import SyncIndicator from './SyncIndicator.vue'
 
+const { t } = useI18n()
 defineProps<{
   isSyncing?: boolean
   isOnline?: boolean
@@ -11,7 +13,7 @@ defineProps<{
 const { currentUser, logout } = useAuth()
 
 const handleLogout = () => {
-  if (confirm('Are you sure you want to sign out?')) {
+  if (confirm(t('userProfile.signOutConfirm'))) {
     logout()
   }
 }
@@ -30,7 +32,7 @@ const handleLogout = () => {
         :isOnline="isOnline !== undefined ? isOnline : true"
         :syncError="syncError || null"
       />
-      <button @click="handleLogout" class="logout-button">Sign Out</button>
+      <button @click="handleLogout" class="logout-button">{{ t('userProfile.signOut') }}</button>
     </div>
   </div>
 </template>

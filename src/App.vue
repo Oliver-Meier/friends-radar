@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FriendsGrid from './components/FriendsGrid.vue'
 import AddFriendForm from './components/AddFriendForm.vue'
 import LoginScreen from './components/LoginScreen.vue'
 import UserProfile from './components/UserProfile.vue'
+import LanguageSwitcher from './components/LanguageSwitcher.vue'
 import TelegramSetup from './components/TelegramSetup.vue'
 import { useFriends } from './composables/useFriends'
 import { useNotifications } from './composables/useNotifications'
 import { useAuth } from './composables/useAuth'
 
+const { t } = useI18n()
 const { currentUser, isGuest, continueAsGuest, exitGuestMode } = useAuth()
 
 // Show app if user is logged in OR in guest mode
@@ -51,6 +54,10 @@ const handleSignIn = () => {
   
   <!-- Show main app if authenticated or in guest mode -->
   <div v-else class="app">
+    <!-- Language switcher (top-left) -->
+    <div class="lang-switcher-fixed">
+      <LanguageSwitcher />
+    </div>
     <!-- User profile fixed in top-right corner (only if logged in) -->
     <UserProfile 
       v-if="currentUser"
@@ -61,40 +68,30 @@ const handleSignIn = () => {
     
     <!-- Guest mode indicator with Sign In option -->
     <div v-else class="guest-banner">
-      <span>📱 Guest Mode - Data stored locally on this device only</span>
-      <button @click="handleSignIn" class="sign-in-btn">Sign In</button>
+      <span>📱 {{ t('guest.banner') }}</span>
+      <button @click="handleSignIn" class="sign-in-btn">{{ t('app.signIn') }}</button>
     </div>
     
-    <h1>Friends Radar</h1>
-    <p class="subtitle">Never lose touch with the people who matter</p>
+    <h1>{{ t('app.title') }}</h1>
+    <p class="subtitle">{{ t('app.subtitle') }}</p>
     
     <!-- Notification banner for supported browsers -->
     <div v-if="isNotificationSupported && !notificationsEnabled" class="notification-banner">
-      <p>Enable notifications to get reminded when friends are due for contact</p>
-      <button @click="handleEnableNotifications" class="enable-btn">Enable Notifications</button>
+      <p>{{ t('notifications.enablePrompt') }}</p>
+      <button @click="handleEnableNotifications" class="enable-btn">{{ t('notifications.enableButton') }}</button>
     </div>
     
     <!-- Safari/iOS info banner -->
     <div v-if="!isNotificationSupported" class="info-banner">
-      <p v-if="isIOS">
-        📱 <strong>iOS Note:</strong> Safari on iOS doesn't support web notifications. 
-        Check the red indicators below to see friends who need contact!
-      </p>
-      <p v-else-if="isSafari">
-        🍎 <strong>Safari Note:</strong> Notifications have limited support in Safari. 
-        Use the visual indicators below to track friend status!
-      </p>
-      <p v-else>
-        ℹ️ Notifications are not supported in your browser. 
-        Use the visual indicators below to track friend status!
-      </p>
+      <p v-if="isIOS">📱 <strong>{{ t('notifications.iosNote') }}</strong></p>
+      <p v-else-if="isSafari">🍎 <strong>{{ t('notifications.safariNote') }}</strong></p>
+      <p v-else>ℹ️ {{ t('notifications.unsupported') }}</p>
     </div>
     
     <!-- Visual indicator for overdue friends -->
     <div v-if="overdueFriends.length > 0 && !notificationsEnabled" class="overdue-banner">
       <p>
-        ⚠️ <strong>{{ overdueFriends.length }} friend{{ overdueFriends.length > 1 ? 's' : '' }}</strong> 
-        {{ overdueFriends.length > 1 ? 'are' : 'is' }} waiting to hear from you!
+        ⚠️ <strong>{{ overdueFriends.length === 1 ? t('overdue.oneFriend') : t('overdue.manyFriends', { count: overdueFriends.length }) }}</strong>
       </p>
     </div>
     
@@ -108,15 +105,15 @@ const handleSignIn = () => {
     <div class="legend">
       <div class="legend-item">
         <span class="legend-color green"></span>
-        <span>Green: 0-7 days</span>
+        <span>{{ t('legend.green') }}</span>
       </div>
       <div class="legend-item">
         <span class="legend-color yellow"></span>
-        <span>Yellow: 7-21 days</span>
+        <span>{{ t('legend.yellow') }}</span>
       </div>
       <div class="legend-item">
         <span class="legend-color red"></span>
-        <span>Red: 21+ days</span>
+        <span>{{ t('legend.red') }}</span>
       </div>
     </div>
   </div>
@@ -129,6 +126,14 @@ const handleSignIn = () => {
   padding: 48px 24px;
   text-align: center;
   min-height: 100vh;
+  position: relative;
+}
+
+.lang-switcher-fixed {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 1000;
 }
 
 .guest-banner {

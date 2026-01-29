@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Friend } from '../types/Friend'
 import { getContactColor } from '../utils/colorUtils'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   friend: Friend
@@ -51,8 +54,8 @@ const handleDelete = (event: Event) => {
     <button 
       class="delete-btn" 
       @click="handleDelete"
-      aria-label="Delete friend"
-      title="Delete friend"
+      :aria-label="t('friend.delete')"
+      :title="t('friend.delete')"
     >
       ×
     </button>

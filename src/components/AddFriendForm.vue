@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const friendName = ref('')
 
 const emit = defineEmits<{
@@ -24,7 +26,7 @@ const handleSubmit = () => {
     <input 
       v-model="friendName"
       type="text"
-      placeholder="Enter friend's name"
+      :placeholder="t('addFriend.placeholder')"
       class="friend-input"
       maxlength="50"
     />
@@ -33,7 +35,7 @@ const handleSubmit = () => {
       class="add-button"
       :disabled="friendName.trim() === ''"
     >
-      Add Friend
+      {{ t('addFriend.button') }}
     </button>
   </form>
 </template>

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 import OAuthDebug from './OAuthDebug.vue'
+
+const { t } = useI18n()
 
 const emit = defineEmits<{
   continueAsGuest: []
@@ -36,29 +40,32 @@ const handleContinueAsGuest = () => {
 
 <template>
   <div class="login-container">
+    <div class="login-lang-switcher">
+      <LanguageSwitcher />
+    </div>
     <div class="login-card">
-      <h1>Friends Radar</h1>
-      <p class="subtitle">Never lose touch with the people who matter</p>
+      <h1>{{ t('login.title') }}</h1>
+      <p class="subtitle">{{ t('login.subtitle') }}</p>
       
       <div class="login-content">
-        <p class="login-message">Sign in to sync across devices</p>
+        <p class="login-message">{{ t('login.message') }}</p>
         <div ref="buttonContainer" class="google-button-container"></div>
         
         <div class="divider">
-          <span>or</span>
+          <span>{{ t('login.or') }}</span>
         </div>
         
         <button @click="handleContinueAsGuest" class="guest-button">
-          Continue as Guest
+          {{ t('guest.continueAsGuest') }}
         </button>
         
         <p class="privacy-note">
-          Guest mode: Data stored locally on this device only<br>
-          Sign in: Sync friends across all your devices
+          {{ t('guest.privacyNote') }}<br>
+          {{ t('guest.privacySignIn') }}
         </p>
         
         <button @click="toggleDebug" class="debug-toggle">
-          {{ showDebug ? '🔼 Hide' : '🔽 Show' }} OAuth Setup Help
+          {{ showDebug ? '🔼 ' + t('login.hideOAuth') : '🔽 ' + t('login.showOAuth') }} {{ t('login.oauthHelp') }}
         </button>
       </div>
     </div>
@@ -75,6 +82,14 @@ const handleContinueAsGuest = () => {
   min-height: 100vh;
   padding: 24px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+}
+
+.login-lang-switcher {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
 }
 
 .login-card {
