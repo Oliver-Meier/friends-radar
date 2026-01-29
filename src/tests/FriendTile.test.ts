@@ -1,10 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createI18n } from 'vue-i18n'
 import FriendTile from '../components/FriendTile.vue'
 import type { Friend } from '../types/Friend'
-import { i18n } from '@/i18n'
 
-const mountOptions = { global: { plugins: [i18n] } }
+// Minimal i18n for tests – no file path resolution (works on Render/CI)
+const testI18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  messages: { en: { friend: { delete: 'Delete' } } }
+})
+const mountOptions = { global: { plugins: [testI18n] } }
 
 describe('FriendTile', () => {
   const createFriend = (overrides = {}): Friend => ({
