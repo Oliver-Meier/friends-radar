@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import FriendTile from '../components/FriendTile.vue'
 import type { Friend } from '../types/Friend'
-import { i18n } from '../i18n'
+import { i18n } from '@/i18n'
 
 const mountOptions = { global: { plugins: [i18n] } }
 
