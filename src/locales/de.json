@@ -48,5 +48,11 @@
   "userProfile": {
     "signOut": "Abmelden",
     "signOutConfirm": "Möchtest du dich wirklich abmelden?"
+  },
+  "sync": {
+    "synced": "Synchronisiert",
+    "syncing": "Synchronisiere...",
+    "offline": "Offline",
+    "error": "Sync-Fehler"
   }
 }
